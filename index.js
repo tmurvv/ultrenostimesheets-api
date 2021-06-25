@@ -87,4 +87,5 @@ app.get("/", async (req, res) => {
     res.send(getRows.data);
 });
 
-app.listen(1337, (req, res) => console.log("running on 1337"));
+const port = process.env.PORT || 3000;
+app.listen(port, (req, res) => console.log("server running"));
