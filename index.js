@@ -12,6 +12,8 @@ const express = require('express');
 
 // internal
 const viewRouter = require('./routes/viewRoutes');
+const timesheetRouter = require('./routes/timesheetRoutes');
+const supportListRouter = require('./routes/supportListRoutes');
 
 // program setup
 const app = express();
