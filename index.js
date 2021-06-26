@@ -43,9 +43,13 @@ app.use(express.static(".")); // put in for Stripe test
 
 //utilities ** see commented code below
 app.use(express.json({limit: '10kb'}))
+app.use(express.urlencoded({extended: true}));
+
 
 //Router
 app.use('/', viewRouter); 
+app.use('/api/v1/ultrenostimesheets', timesheetRouter);
+app.use('/api/v1/ultrenostimesheets/supportlists', supportListRouter);
 
 //parser for pug
 const bodyParser = require('body-parser');
@@ -131,10 +135,7 @@ module.exports = app;
 
 
 // // console.log(req.body)
-// app.use(express.urlencoded({extended: true}));
-// app.use(express.json()) // To parse the incoming requests with JSON payloads
-// app.use('/api/v1/ultrenostimesheets', timesheetRouter);
-// app.use('/api/v1/ultrenostimesheets/supportlists', supportListRouter);
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, (req, res) => console.log("server running"));
