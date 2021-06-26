@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const timesheetController = require('../controllers/timesheetController');
 
-
 router.get('/', timesheetController.viewTimesheets);
 router.post('/', timesheetController.appendTimesheets);
 router.patch('/', timesheetController.updateTimesheets);
