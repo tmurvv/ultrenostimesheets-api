@@ -35,7 +35,7 @@ exports.viewTimesheets = async (req, res) => {
     }
 }
 exports.appendTimesheets = async (req, res) => {
-    const newValues = req.body.dataRow;
+    const newValues = req.body;
     // create auth keys instance
     const auth = new google.auth.GoogleAuth({
         keyFile: "credentials.json",
@@ -67,14 +67,15 @@ exports.appendTimesheets = async (req, res) => {
                         newValues[7],
                         newValues[8],
                         newValues[9], 
+                        newValues[10], 
+                        newValues[11]
                     ]
                 ]
             }
         });
         res.status(200).json({
             title: 'ultrenostimesheets | Post Timesheet',
-            status: 'success',
-            data: 'return timesheet here'
+            status: 'success'
         });
     } catch(e) {
         console.log(e.message);

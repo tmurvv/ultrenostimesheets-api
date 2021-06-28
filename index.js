@@ -1,6 +1,8 @@
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';  // to allow scraping of webstores with invalid ssl
 // require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
-
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
+const mongoose = require('mongoose');
 // security
 // const EventEmitter = require('events');
 const cors = require('cors');
@@ -11,9 +13,9 @@ const cors = require('cors');
 const express = require('express');
 
 // internal
-const viewRouter = require('./routes/viewRoutes');
 const timesheetRouter = require('./routes/timesheetRoutes');
 const supportListRouter = require('./routes/supportListRoutes');
+const userRouter = require('./routes/userRoutes');
 
 // program setup
 const app = express();
@@ -41,65 +43,59 @@ app.all('/', function(req, res, next) {
 //Serve static image files
 express.static('assets');
 app.use(express.static('img'));
-app.use(express.static(".")); // put in for Stripe test
 
 //utilities ** see commented code below
 app.use(express.json({limit: '10kb'}))
 app.use(express.urlencoded({extended: true}));
 
-
-//Router
-app.use('/', viewRouter); 
+//Router 
 app.use('/api/v1/ultrenostimesheets', timesheetRouter);
 app.use('/api/v1/ultrenostimesheets/supportlists', supportListRouter);
+app.use('/api/v1/ultrenostimesheets/users', userRouter);
+// app.post('/api/v1/ultrenostimesheets/users/signup', async (req, res) => {
+//     console.log('insignup', req.body)
+//     // // const saltRounds=10;
+//     // // const hashPassword = await bcrypt.hash(req.body.password, saltRounds);
+//     // const user = Object.assign({ 
+//     //     contactId: uuid(), 
+//     //     firstname: req.body.firstname, 
+//     //     lastname: req.body.lastname, 
+//     //     emailphone: req.body.emailphone,
+//     //     password: req.body.password,
+//     //     _date_created: Date.now(),
+//     //     passwordChangedAt: req.body.passwordChangedAt
+//     // });
+//     // try {
+//     //     const addeduser = await Users.create(user);
 
-//parser for pug
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//     //     // createSendToken(addeduser, 201, res);
+        
+//     // } catch (e) {
+//     //     res.status(500).json({
+//     //         title: 'Ultimate Renovations | Signup',
+//     //         status: 'fail',
+//     //         data: {
+//     //             message: e.message
+//     //         }
+//     //     });
+//     // }
+//     res.status(200).json({
+//         title: 'signup',
+//         status: 'success'
+//     });
+// });
+
+// //parser for pug
+// const bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 // Catch invalid routes
 app.all('*', (req,res,next) => {
-    next(console.log(`Web address 'findaharp-api${req.originalUrl}' not found. Please see findaharp-api docs for valid addresses.`, 404));
+    next(console.log(`Web address 'take2tech.herokuapp.com${req.originalUrl}' not found. Please see take2tech-api docs for valid addresses.`, 404));
 });
 
 // app.use(globalErrorHandler);
-
-module.exports = app;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // const express = require("express");
@@ -138,6 +134,31 @@ module.exports = app;
 
 // // console.log(req.body)
 
+/************ 
+*Connect DB
+*************/
+const DB = process.env.DATABASE.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+// const DEVDB = process.env.DEV_DATABASE.replace(
+//     '<PASSWORD>',
+//     process.env.DEV_DATABASE_PASSWORD
+// );
+
+// const PORTDB = process.env.PORTFOLIO_DATABASE.replace(
+//     '<PASSWORD>',
+//     process.env.PORTFOLIO_DATABASE_PASSWORD
+// );
+
+mongoose
+    .connect(DB, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('DB connection successful'));
 
 const port = process.env.PORT || 3000;
 app.listen(port, (req, res) => console.log("server running"));
