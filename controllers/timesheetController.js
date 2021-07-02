@@ -18,7 +18,6 @@ exports.viewTimesheets = async (req, res) => {
     const spreadsheetId = "1eFps1mXC20eUXoHk3qCGxlKvAPwSaDQIa7gild_higc";
     // Get Timesheets
     try {
-        console.log('here')
         const getRows = await googleSheets.spreadsheets.values.get({
             auth,
             spreadsheetId,
@@ -26,7 +25,6 @@ exports.viewTimesheets = async (req, res) => {
             // range: "Sheet1!A:C" // add !A:C to get only columns A-C       
         });
         const timesheets = getRows.data.values;
-        console.log(getRows)
         res.status(200).json({
             title: 'ultrenostimesheets | Get All Timesheets',
             status: 'success',
@@ -44,8 +42,6 @@ exports.viewTimesheets = async (req, res) => {
 exports.appendTimesheets = async (req, res) => {
 
     const newValues = req.body;
-    console.log('uuid:', uuid)
-    console.log('newValues:', newValues)
     // create auth keys instance
     const auth = new google.auth.GoogleAuth({
         keyFile: "credentials.json",
@@ -99,31 +95,20 @@ exports.appendTimesheets = async (req, res) => {
     }
 }
 exports.updateTimesheets = async (req, res) => {
-    console.log('inupdatetimesheets', req.body.data)
-
     const creds = require('../credentials.json'); // the file saved above
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEETID);
     await doc.useServiceAccountAuth(creds);
-    
-    console.log('here')
+ 
     try {
-        // console.log('docabv:', doc.title)
         await doc.loadInfo(); // loads document properties and worksheets
-        console.log('docbel:', doc.title)
         const timesheet = doc.sheetsByIndex[0];
         await timesheet.loadCells();
-        console.log(timesheet.getCellByA1('M2').value)
-        console.log(timesheet.rowCount);
         let idArray = [];
         //find row
         // for (i=0; i<=(timesheet.rowCount-1); i++) {
-        for (i=0; i<=(10); i++) {
-            
+        for (i=0; i<=(timesheet.rowCount-1); i++) {
             const vari = timesheet.getCell(i, 12).value;
-            console.log('vari:', vari)
-            console.log('req:', req.body[12]);
             if (vari===req.body[12]) {
-                console.log("FOUND IT");
                 timesheet.getCell(i,3).value = req.body[2];
                 timesheet.getCell(i,3).value = req.body[3];
                 timesheet.getCell(i,4).value = req.body[4];
@@ -135,30 +120,13 @@ exports.updateTimesheets = async (req, res) => {
                 timesheet.getCell(i,10).value = req.body[10];
                 timesheet.getCell(i,11).value = req.body[11];
                 await timesheet.saveUpdatedCells();
-                console.log('success ithink')
                 res.status(200).json({
                     title: 'ultrenostimesheets | Update Timesheet',
                     status: 'success',
                     data: 'return timesheet here'
                 });
-            
-            }
-                
-            
+            }       
         }
-
-        // update cell
-        console.log('idArray:', idArray)
-
-        // send back up to sheet
-
-        
-        // // await doc.updateProperties({ title: 'renamed doc' });
-        // res.status(200).json({
-        //     title: 'ultrenostimesheets | Update Timesheet',
-        //     status: 'success',
-        //     data: 'return timesheet here'
-        // });
     } catch(e) {
         console.log(e.message);
         return res.status(500).json({
@@ -170,30 +138,19 @@ exports.updateTimesheets = async (req, res) => {
 
 }
 exports.deleteTimesheets = async (req, res) => {
-    console.log('indeletetimesheets', req.body)
-
     const creds = require('../credentials.json'); // the file saved above
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEETID);
     await doc.useServiceAccountAuth(creds);
-    
-    console.log('here')
     try {
-        // console.log('docabv:', doc.title)
         await doc.loadInfo(); // loads document properties and worksheets
-        console.log('docbel:', doc.title)
         const timesheet = doc.sheetsByIndex[0];
         await timesheet.loadCells();
-        console.log(timesheet.getCellByA1('M2').value)
-        console.log(timesheet.rowCount);
         let idArray = [];
         //find row
         // for (i=0; i<=(timesheet.rowCount-1); i++) {
         for (i=0; i<=(10); i++) {
             const vari = timesheet.getCell(i, 12).value;
-            console.log('vari:', vari)
-            console.log('req:', req.body.delId);
             if (vari===req.body.delId) {
-                console.log("FOUND IT");
                 timesheet.getCell(i,0).value = 'This';
                 timesheet.getCell(i,1).value = 'Entry';
                 timesheet.getCell(i,2).value = 'Deleted';
@@ -207,30 +164,13 @@ exports.deleteTimesheets = async (req, res) => {
                 timesheet.getCell(i,10).value = 'User';
                 timesheet.getCell(i,11).value = '';
                 await timesheet.saveUpdatedCells();
-                console.log('success ithink')
                 res.status(200).json({
                     title: 'ultrenostimesheets | Delete Timesheet',
                     status: 'success',
                     data: 'return timesheet here'
-                });
-            
-            }
-                
-            
+                });          
+            }           
         }
-
-        // update cell
-        console.log('idArray:', idArray)
-
-        // send back up to sheet
-
-        
-        // // await doc.updateProperties({ title: 'renamed doc' });
-        // res.status(200).json({
-        //     title: 'ultrenostimesheets | Update Timesheet',
-        //     status: 'success',
-        //     data: 'return timesheet here'
-        // });
     } catch(e) {
         console.log(e.message);
         return res.status(500).json({

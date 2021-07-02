@@ -52,7 +52,6 @@ exports.signup = async (req, res) => {
     // check if email exists 
     try {
         const emailExist = await Users.findOne({email: req.body.email});
-        console.log('emailExist:', emailExist)
         if (emailExist) throw new Error('Email already exists in our records.'); 
     } catch(e) {
         return res.status(500).json({
@@ -72,12 +71,9 @@ exports.signup = async (req, res) => {
         password: req.body.password,
         _date_created: Date.now()
     });
-    console.log('user:', user)
     try {
-        console.log('inservertyr')
         const addeduser = await Users.create(user);
         if (!addeduser) throw new Error('Something went wrong on signup.');
-        console.log('addeduser:', addeduser)
         let userCopy = {...addeduser._doc};
         delete userCopy.password;
         // createSendToken(addeduser, 201, res);
@@ -98,8 +94,6 @@ exports.signup = async (req, res) => {
     
 }
 exports.login = async (req, res) => {
-    console.log('inlogin', req.body);
-    
     try {
         // find User
         let userInfo;
