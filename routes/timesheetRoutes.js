@@ -6,7 +6,6 @@ router.get('/', timesheetController.viewTimesheets);
 // router.get('/updatetimesheet', timesheetController.viewTimesheets);
 router.post('/updatetimesheet', timesheetController.updateTimesheets);
 router.post('/', timesheetController.appendTimesheets);
-router.patch('/', timesheetController.updateTimesheets);
 router.post('/deletetimesheet', timesheetController.deleteTimesheets);
 
 module.exports = router;
