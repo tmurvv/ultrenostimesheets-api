@@ -135,7 +135,6 @@ exports.updateTimesheets = async (req, res) => {
             error: e.message
         });
     }
-
 }
 exports.deleteTimesheets = async (req, res) => {
     const creds = require('../credentials.json'); // the file saved above
@@ -147,21 +146,20 @@ exports.deleteTimesheets = async (req, res) => {
         await timesheet.loadCells();
         let idArray = [];
         //find row
-        // for (i=0; i<=(timesheet.rowCount-1); i++) {
-        for (i=0; i<=(10); i++) {
+        for (i=0; i<=timesheet.rowCount-1; i++) {
             const vari = timesheet.getCell(i, 12).value;
             if (vari===req.body.delId) {
-                timesheet.getCell(i,0).value = 'This';
-                timesheet.getCell(i,1).value = 'Entry';
-                timesheet.getCell(i,2).value = 'Deleted';
-                timesheet.getCell(i,3).value = 'By';
-                timesheet.getCell(i,4).value = 'User';
+                timesheet.getCell(i,0).value = 'Deleted by User';
+                timesheet.getCell(i,1).value = '';
+                timesheet.getCell(i,2).value = '';
+                timesheet.getCell(i,3).value = '';
+                timesheet.getCell(i,4).value = '';
                 timesheet.getCell(i,5).value = '';
-                timesheet.getCell(i,6).value = 'This';
-                timesheet.getCell(i,7).value = 'Entry';
-                timesheet.getCell(i,8).value = 'Deleted';
-                timesheet.getCell(i,9).value = 'By';
-                timesheet.getCell(i,10).value = 'User';
+                timesheet.getCell(i,6).value = '';
+                timesheet.getCell(i,7).value = '';
+                timesheet.getCell(i,8).value = '';
+                timesheet.getCell(i,9).value = '';
+                timesheet.getCell(i,10).value = '';
                 timesheet.getCell(i,11).value = '';
                 await timesheet.saveUpdatedCells();
                 res.status(200).json({
@@ -169,7 +167,7 @@ exports.deleteTimesheets = async (req, res) => {
                     status: 'success',
                     data: 'return timesheet here'
                 });          
-            }           
+            }          
         }
     } catch(e) {
         console.log(e.message);
@@ -179,6 +177,9 @@ exports.deleteTimesheets = async (req, res) => {
             error: e.message
         });
     }
-
-
+    return res.status(500).json({
+        title: 'ultrenostimesheets | Timesheet Update',
+        status: 'fail',
+        error: "Timesheet not found."
+    });
 }
