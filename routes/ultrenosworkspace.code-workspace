@@ -5,6 +5,12 @@
         },
         {
             "path": "..\\..\\ultrenos-fe"
+        },
+        {
+            "path": "..\\..\\..\\myProjects\\OneStopHarpShop-api"
+        },
+        {
+            "path": "..\\..\\..\\myProjects\\FindAHarp-fe"
         }
     ],
     "settings": {}

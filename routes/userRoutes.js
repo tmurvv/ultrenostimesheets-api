@@ -8,6 +8,8 @@ const timesheetController = require('../controllers/timesheetController');
 
 router.post('/signup', userController.signup);
 router.post('/login', userController.login);
+router.post('/sendresetemail', userController.sendResetEmail);
+router.post('/resetpassword', userController.resetPassword);
 // router.get(
 //     '/daycalendar',
 //     authController.protect,

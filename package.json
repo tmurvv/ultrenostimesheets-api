@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "atob": "^2.1.2",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "btoa": "^1.2.1",
     "cors": "^2.8.5",
     "csv-parse": "^4.16.0",
     "dotenv": "^10.0.0",
@@ -22,6 +24,7 @@
     "google-spreadsheet": "^3.1.15",
     "googleapis": "^78.0.0",
     "mongoose": "^5.12.15",
+    "nodemailer": "^6.6.2",
     "request": "^2.88.2",
     "uuid": "^8.3.2"
   },

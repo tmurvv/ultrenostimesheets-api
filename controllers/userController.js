@@ -1,8 +1,9 @@
 // const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
-// const atob = require('atob');
+const atob = require('atob');
 const bcrypt = require('bcrypt');
 const {Users} = require('../schemas/UserSchema');
+const {resetPasswordEmail} = require('../assets/emailTemplates/resetPasswordEmail');
 // const {emailVerifySend, emailResetPassword} = require('../email');
 
 // const signToken = userId => jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -134,6 +135,40 @@ exports.login = async (req, res) => {
         // });
     }
 }
+exports.sendResetEmail = async (req, res) => {
+    console.log('in sendresetemail', req.body.useremail)
+    try {
+        // find user
+        const user = await Users.find({email: req.body.useremail});
+        if (!user) throw new Error();
+        // send reset email
+        try{
+            console.log('ready for send email function')
+            resetPasswordEmail(user[0]);
+        } catch(e) {
+            console.log(e.message)
+            throw new Error('There was a problem sending reset email. Please try again.');
+        }
+        // return result
+        res.status(200).json({
+            title: 'FindAHarp.com | Reset Password',
+            status: 'success',
+            // data: {
+            //     message: 'Reset Email Sent',
+            //     useremail: user.email
+            // }
+        });
+    } catch (e) {
+        console.log('error', e.message)
+        res.status(500).json({
+            title: 'Ultimate Renovations Timesheets | Send Reset Email',
+            status: 'fail',
+            data: {
+                message: `Something went wrong while sending reset email: ${e.message}`
+            }
+        });
+    }
+}
 // exports.getAll = async (req, res) => {
 //     try {
 //         const allUsers = await Users.find();
@@ -230,6 +265,33 @@ exports.login = async (req, res) => {
 //         });
 //     }
 // }
+exports.resetPassword = async (req, res) => {
+    console.log('inpassword', req.body.newpassword)
+    const useremail = req.body.useremail;
+    console.log('useremail:', useremail)
+    try {
+        // update password
+        const user = await Users.findOne({email: useremail});
+        user.password = req.body.newpassword;
+        await user.save();
+        // return result
+        res.status(200).json({
+            title: 'Ultimate Renovations | Reset Password',
+            status: 'success',
+            data: {
+                message: 'Password Reset'
+            }
+        });
+    } catch (e) {
+        res.status(500).json({
+            title: 'Ultimate Renovations | Reset Password',
+            status: 'fail',
+            data: {
+                message: `Something went wrong while resetting password: ${e.message}`
+            }
+        });
+    }      
+}
 // exports.updatePassword = async (req, res) => {
 //     // if call is from password reset email
 //     if (req.body.resetpassword) {
@@ -310,36 +372,7 @@ exports.login = async (req, res) => {
 //         }
 //     }   
 // }
-// exports.sendResetEmail = async (req, res) => {
-//     try {
-//         // find user
-//         const user = await Users.find({email: req.params.useremail});
-//         if (!user) throw new Error();
-//         // send reset email
-//         try{
-//             emailResetPassword(user[0]);
-//         } catch(e) {
-//             throw new Error('There was a problem sending reset email. Please try again.');
-//         }
-//         // return result
-//         res.status(200).json({
-//             title: 'FindAHarp.com | Reset Password',
-//             status: 'success',
-//             data: {
-//                 message: 'Reset Email Sent',
-//                 useremail: user.email
-//             }
-//         });
-//     } catch (e) {
-//         res.status(500).json({
-//             title: 'FindAHarp.com | Send Reset Email',
-//             status: 'fail',
-//             data: {
-//                 message: `Something went wrong while sending reset email: ${e.message}`
-//             }
-//         });
-//     }
-// }
+
 // exports.deleteUser = async (req, res) => {
 //     // get user  
 //     const userInfo = await Users.findById(req.params.userid);
