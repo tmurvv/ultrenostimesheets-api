@@ -3,6 +3,8 @@ const axios = require('axios');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { gmail } = require("googleapis/build/src/apis/gmail");
 const uuid = require('uuid');
+const fs = require("fs");
+
 const {Timesheets} = require('../schemas/TimesheetSchema');
 
 exports.viewTimesheets = async (req, res) => {
@@ -26,6 +28,7 @@ exports.viewTimesheetsByUser = async (req, res) => {
     console.log(req.body)
     try {
         const timesheets = await Timesheets.find({userid: req.body.userid});
+        
         res.status(200).json({
             title: 'Ultimate Renovations | View Timesheets By User',
             status: 'success',
@@ -188,52 +191,44 @@ exports.deleteTimesheets = async (req, res) => {
             error: e.message
         });
     }
+}
+exports.downloadTimesheets = async (req, res) => {
+    console.log('in download timesheets')
     
-    // const creds = require('../credentials.json'); // the file saved above
-    // const doc = new GoogleSpreadsheet(process.env.SPREADSHEETID);
-    // await doc.useServiceAccountAuth(creds);
-    // try {
-    //     await doc.loadInfo(); // loads document properties and worksheets
-    //     const timesheet = doc.sheetsByIndex[0];
-    //     await timesheet.loadCells();
-    //     let idArray = [];
-    //     //find row
-    //     for (i=0; i<=timesheet.rowCount-1; i++) {
-    //         const vari = timesheet.getCell(i, 12).value;
-    //         if (vari===req.body.delId) {
-    //             timesheet.getCell(i,0).value = 'Deleted by User';
-    //             timesheet.getCell(i,1).value = '';
-    //             timesheet.getCell(i,2).value = '';
-    //             timesheet.getCell(i,3).value = '';
-    //             timesheet.getCell(i,4).value = '';
-    //             timesheet.getCell(i,5).value = '';
-    //             timesheet.getCell(i,6).value = '';
-    //             timesheet.getCell(i,7).value = '';
-    //             timesheet.getCell(i,8).value = '';
-    //             timesheet.getCell(i,9).value = '';
-    //             timesheet.getCell(i,10).value = '';
-    //             timesheet.getCell(i,11).value = '';
-    //             await timesheet.saveUpdatedCells();
-    //             res.status(200).json({
-    //                 title: 'ultrenostimesheets | Delete Timesheet',
-    //                 status: 'success',
-    //                 data: 'return timesheet here'
-    //             });          
-    //         }          
-    //     }
-    // } catch(e) {
-    //     console.log(e.message);
-    //     return res.status(500).json({
-    //         title: 'ultrenostimesheets | Timesheet Update',
-    //         status: 'fail',
-    //         error: e.message
-    //     });
-    // }
-    // return res.status(500).json({
-    //     title: 'ultrenostimesheets | Timesheet Update',
-    //     status: 'fail',
-    //     error: "Timesheet not found."
-    // });
+    try {
+        const timesheets = await Timesheets.find({downloaded: false});
+        if (!timesheets) throw new Error('No new timesheets to download.')
+        
+        let timesheetcsv = '';
+
+        timesheets.map(sheet=> {
+            timesheetcsv=`${timesheetcsv}${sheet.firstname},${sheet.lastname},${sheet.jobname}\n`
+        })
+        console.log('timesheetcsv:', timesheetcsv)
+        // Query and stream
+        // const data = await JSON.stringify(timesheets);
+        fs.writeFile('timesheets2.csv', timesheetcsv, function (err) {
+            if (err) return console.log("here err", err);
+            console.log('success?')
+        })
+        console.log('here')
+        const file = `timesheets2.csv`;
+        
+        console.log('file here:', file)
+        res.download(file); // Set disposition and send it.
+        // res.status(200).json({
+        //     title: 'ultrenostimesheets | Delete Timesheet',
+        //     status: 'success',
+        //     timesheets
+        // });          
+    } catch(e) {
+        console.log(e.message);
+        return res.status(500).json({
+            title: 'ultrenostimesheets | Download Timesheets',
+            status: 'fail',
+            error: e.message
+        });
+    }
 }
 
 

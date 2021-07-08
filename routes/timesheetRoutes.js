@@ -8,5 +8,6 @@ router.post('/updatetimesheet', timesheetController.updateTimesheets);
 router.post('/deletetimesheet', timesheetController.deleteTimesheets);
 router.post('/appendtimesheet', timesheetController.appendTimesheets);
 router.post('/viewtimesheetsbyuser', timesheetController.viewTimesheetsByUser);
+router.get('/downloadtimesheets', timesheetController.downloadTimesheets);
 
 module.exports = router;
