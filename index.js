@@ -11,6 +11,7 @@ const cors = require('cors');
 // const hpp = require('hpp');
 // const helmet = require('helmet');
 const express = require('express');
+const multer = require('multer');
 
 // internal
 const timesheetRouter = require('./routes/timesheetRoutes');
@@ -47,6 +48,21 @@ app.use(express.static('img'));
 //utilities ** see commented code below
 app.use(express.json({limit: '10kb'}))
 app.use(express.urlencoded({extended: true}));
+
+const upload = multer({
+    dest: 'uploads/', // this saves your file into a directory called "uploads"
+    onError : function(err, next) {
+        console.log('error', err);
+        res.redirect('http://localhost:3006/?success=false');
+    }
+}); 
+app.get('/api/v1/admin/uploadwips', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+// It's very crucial that the file name matches the name attribute in your html
+app.post('/api/v1/ultrenostimesheets/admin/uploadwips', upload.single('file-to-upload'), (req, res) => {
+    res.redirect('http://localhost:3006/?success=true');
+});
 
 //Router 
 app.use('/api/v1/ultrenostimesheets', timesheetRouter);
