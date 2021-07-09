@@ -201,7 +201,6 @@ exports.downloadTimesheets = async (req, res) => {
     }
 }
 exports.numTimesheets = async (req, res) => {
-    
     try {
         const timesheets = await Timesheets.find({downloaded: false});
         

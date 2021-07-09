@@ -3,6 +3,11 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const mongoose = require('mongoose');
+const fs = require("fs");
+const path = require("path");
+const util = require("util");
+
+
 // security
 // const EventEmitter = require('events');
 const cors = require('cors');
@@ -17,6 +22,8 @@ const multer = require('multer');
 const timesheetRouter = require('./routes/timesheetRoutes');
 const supportListRouter = require('./routes/supportListRoutes');
 const userRouter = require('./routes/userRoutes');
+const adminRouter = require('./routes/adminRoutes');
+const {Joblist} = require('./schemas/JoblistSchema');
 
 // program setup
 const app = express();
@@ -49,6 +56,8 @@ app.use(express.static('img'));
 app.use(express.json({limit: '10kb'}))
 app.use(express.urlencoded({extended: true}));
 
+const writefile = util.promisify(fs.writeFile);
+
 const upload = multer({
     dest: 'uploads/', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
@@ -56,19 +65,68 @@ const upload = multer({
         res.redirect('http://localhost:3006/?success=false');
     }
 }); 
-app.get('/api/v1/admin/uploadwips', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
+// app.get('/api/v1/admin/uploadjoblist', (req, res) => {
+//     res.sendFile(__dirname + '/index.html');
+// });
 // It's very crucial that the file name matches the name attribute in your html
-app.post('/api/v1/ultrenostimesheets/admin/uploadwips', upload.single('file-to-upload'), (req, res) => {
+app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-to-upload'), async (req, res) => {
+    upload.single('file-to-upload')
     // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+    // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+    const filename=req.file.filename;
+    function readTextFile(file) {
+        var content;
+        fs.readFile(path.join(__dirname, "uploads", filename), 'utf8', async function (err, data) {
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            }
+            content = util.format(data,'');
+            var contentArray = content.split('\n');
+            await Joblist.updateMany({current: true, current: false})
+            for (const item of contentArray) {
+                const appendItem = {jobid: item.split('\t')[0], jobname: item.split('\t')[1].replace('\r',''), current: true};
+                try {
+                    await Joblist.create(appendItem);
+                } catch(e) {
+                    console.log('error on create', e.message)
+                }
+            }
+        });
+    }
+    
+    readTextFile(`download/${filename}`);
+    // fs.readFile('')
+    //remove id
+    res.redirect('http://localhost:3006');
+    // res.status(200).json({
+    //     title: 'Ultimate Renovations | Upload Job List',
+    //     status: 'success',
+    //     // data: updatedtimesheet
+    // });
+    // try {
+    //     const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
+    //     console.log('updatedtimesheet:', updatedtimesheet)
+    //     res.status(200).json({
+    //         title: 'ultrenostimesheets | Update Timesheet',
+    //         status: 'success',
+    //         data: updatedtimesheet
+    //     });
+    // } catch(e) {
+    //     console.log(e.message);
+    //     return res.status(500).json({
+    //         title: 'ultrenostimesheets | Timesheet Update',
+    //         status: 'fail',
+    //         error: e.message
+    //     });
+    // }
 });
 
 //Router 
 app.use('/api/v1/ultrenostimesheets', timesheetRouter);
 app.use('/api/v1/ultrenostimesheets/supportlists', supportListRouter);
 app.use('/api/v1/ultrenostimesheets/users', userRouter);
+app.use('/api/v1/ultrenostimesheets/admin', adminRouter);
 // app.post('/api/v1/ultrenostimesheets/users/signup', async (req, res) => {
 //     console.log('insignup', req.body)
 //     // // const saltRounds=10;
