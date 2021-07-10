@@ -68,11 +68,11 @@ const upload = multer({
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
 //     res.sendFile(__dirname + '/index.html');
 // });
-// It's very crucial that the file name matches the name attribute in your html
+// Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-to-upload'), async (req, res) => {
+    console.log('inupload')
     upload.single('file-to-upload')
-    // res.redirect('http://localhost:3006/?success=true');
-    // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+    
     const filename=req.file.filename;
     function readTextFile(file) {
         var content;
@@ -84,42 +84,26 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             content = util.format(data,'');
             var contentArray = content.split('\n');
             await Joblist.updateMany({current: true, current: false})
+            console.log('here')
             for (const item of contentArray) {
-                const appendItem = {jobid: item.split('\t')[0], jobname: item.split('\t')[1].replace('\r',''), current: true};
+                
+                const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
+                console.log('appendItem:', appendItem)
                 try {
                     await Joblist.create(appendItem);
                 } catch(e) {
                     console.log('error on create', e.message)
                 }
+                  
             }
         });
     }
     
     readTextFile(`download/${filename}`);
     // fs.readFile('')
-    //remove id
-    res.redirect('http://localhost:3006');
-    // res.status(200).json({
-    //     title: 'Ultimate Renovations | Upload Job List',
-    //     status: 'success',
-    //     // data: updatedtimesheet
-    // });
-    // try {
-    //     const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
-    //     console.log('updatedtimesheet:', updatedtimesheet)
-    //     res.status(200).json({
-    //         title: 'ultrenostimesheets | Update Timesheet',
-    //         status: 'success',
-    //         data: updatedtimesheet
-    //     });
-    // } catch(e) {
-    //     console.log(e.message);
-    //     return res.status(500).json({
-    //         title: 'ultrenostimesheets | Timesheet Update',
-    //         status: 'fail',
-    //         error: e.message
-    //     });
-    // }
+    //remove id 
+    res.redirect('http://localhost:3006/?success=true');
+    // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
 });
 
 //Router 

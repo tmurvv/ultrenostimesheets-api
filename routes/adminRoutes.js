@@ -7,7 +7,9 @@ const adminController = require('../controllers/adminController');
 
 //router.use(authController.isLoggedIn);
 
-router.post('/uploadjoblist', adminController.uploadJobList);
+// router.post('/uploadjoblist', adminController.uploadJobList);
+router.get('/numtimesheets', adminController.numTimesheets);
+router.get('/downloadtimesheets', adminController.downloadTimesheets);
 
 // router.get(
 //     '/daycalendar',
