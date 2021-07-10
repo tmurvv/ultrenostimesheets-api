@@ -77,7 +77,7 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     const filename=req.file.filename;
     function readTextFile(file) {
         var content;
-        fs.readFile(path.join(__dirname, "uploads", filename), 'utf8', async function (err, data) {
+        fs.readFile(path.join(__dirname, "tmp", filename), 'utf8', async function (err, data) {
             if (err) {
                 console.log(err);
                 process.exit(1);

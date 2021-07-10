@@ -9,13 +9,13 @@ const {Joblist} = require('../schemas/JoblistSchema');
 const {Timesheets} = require('../schemas/TimesheetsSchema');
 
 
-const upload = multer({
-    dest: '../uploads/', // this saves your file into a directory called "uploads"
-    onError : function(err, next) {
-        console.log('error', err);
-        res.redirect('http://localhost:3006/?success=false');
-    }
-}); 
+// const upload = multer({
+//     dest: '.tmp', // this saves your file into a directory called "uploads"
+//     onError : function(err, next) {
+//         console.log('error', err);
+//         res.redirect('http://localhost:3006/?success=false');
+//     }
+// }); 
 // app.get('/api/v1/admin/uploadwips', (req, res) => {
 //     res.sendFile(__dirname + '/index.html');
 // });
@@ -26,34 +26,34 @@ const upload = multer({
 // });
 
 
-exports.uploadJobList = async (req, res) => {
-    upload.single('file-to-upload')
-    // res.redirect('http://localhost:3006/?success=true');
-    // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
-    // fs.readFile('')
-    //remove id
-    res.status(200).json({
-        title: 'Ultimate Renovations | Upload Job List',
-        status: 'success',
-        // data: updatedtimesheet
-    });
-    // try {
-    //     const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
-    //     console.log('updatedtimesheet:', updatedtimesheet)
-    //     res.status(200).json({
-    //         title: 'ultrenostimesheets | Update Timesheet',
-    //         status: 'success',
-    //         data: updatedtimesheet
-    //     });
-    // } catch(e) {
-    //     console.log(e.message);
-    //     return res.status(500).json({
-    //         title: 'ultrenostimesheets | Timesheet Update',
-    //         status: 'fail',
-    //         error: e.message
-    //     });
-    // }
-}
+// exports.uploadJobList = async (req, res) => {
+//     upload.single('file-to-upload')
+//     // res.redirect('http://localhost:3006/?success=true');
+//     // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+//     // fs.readFile('')
+//     //remove id
+//     res.status(200).json({
+//         title: 'Ultimate Renovations | Upload Job List',
+//         status: 'success',
+//         // data: updatedtimesheet
+//     });
+//     // try {
+//     //     const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
+//     //     console.log('updatedtimesheet:', updatedtimesheet)
+//     //     res.status(200).json({
+//     //         title: 'ultrenostimesheets | Update Timesheet',
+//     //         status: 'success',
+//     //         data: updatedtimesheet
+//     //     });
+//     // } catch(e) {
+//     //     console.log(e.message);
+//     //     return res.status(500).json({
+//     //         title: 'ultrenostimesheets | Timesheet Update',
+//     //         status: 'fail',
+//     //         error: e.message
+//     //     });
+//     // }
+// }
 
 exports.numTimesheets = async (req, res) => {
     try {
