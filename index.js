@@ -59,7 +59,7 @@ app.use(express.urlencoded({extended: true}));
 const writefile = util.promisify(fs.writeFile);
 
 const upload = multer({
-    dest: '/uploads', // this saves your file into a directory called "uploads"
+    dest: '/app/uploads', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
         console.log('error', err);
         // res.redirect('http://localhost:3006/?success=false');
