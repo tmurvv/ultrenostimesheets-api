@@ -98,7 +98,7 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             }
         });
     }
-    
+     
     readTextFile(`download/${filename}`);
     // fs.readFile('')
     //remove id 
