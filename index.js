@@ -59,10 +59,11 @@ app.use(express.urlencoded({extended: true}));
 const writefile = util.promisify(fs.writeFile);
 
 const upload = multer({
-    dest: 'uploads/', // this saves your file into a directory called "uploads"
+    dest: '/uploads', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
         console.log('error', err);
-        res.redirect('http://localhost:3006/?success=false');
+        // res.redirect('http://localhost:3006/?success=false');
+        res.redirect('https://ultrenostimesheets.herokuapp.com/?success=false');
     }
 }); 
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
@@ -102,8 +103,8 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     readTextFile(`download/${filename}`);
     // fs.readFile('')
     //remove id 
-    res.redirect('http://localhost:3006/?success=true');
-    // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+    // res.redirect('http://localhost:3006/?success=true');
+    res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
 });
 
 //Router 
