@@ -27,11 +27,9 @@ const upload = multer({
 
 
 exports.uploadJobList = async (req, res) => {
-    console.log('imin joblist')
     upload.single('file-to-upload')
     // res.redirect('http://localhost:3006/?success=true');
     // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
-    console.log(req.file.filename)
     // fs.readFile('')
     //remove id
     res.status(200).json({
@@ -58,7 +56,6 @@ exports.uploadJobList = async (req, res) => {
 }
 
 exports.numTimesheets = async (req, res) => {
-    console.log('imin timesheets number')
     try {
         const timesheets = await Timesheets.find({downloaded: false});
         
@@ -77,7 +74,6 @@ exports.numTimesheets = async (req, res) => {
     }
 }
 exports.downloadTimesheets = async (req, res) => {
-    console.log('indowntimesheets')
     function getMinutesWorked(starttime, endtime, lunchtime) {
         // shortcut if endtime before starttime
         if ((new Date(endtime)).getTime()-(new Date(starttime)).getTime()<=0) return -1;
