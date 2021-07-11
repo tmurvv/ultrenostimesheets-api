@@ -137,12 +137,15 @@ exports.login = async (req, res) => {
         // });
     }
 }
+
+
+
 exports.sendResetEmail = async (req, res) => {
     console.log('in sendresetemail', req.body.useremail)
     try {
         // find user
         const user = await Users.find({email: req.body.useremail});
-        if (!user) throw new Error();
+        if (!user) throw new Error('Email not found.');
         // send reset email
         try{
             console.log('ready for send email function')
@@ -155,10 +158,6 @@ exports.sendResetEmail = async (req, res) => {
         res.status(200).json({
             title: 'FindAHarp.com | Reset Password',
             status: 'success',
-            // data: {
-            //     message: 'Reset Email Sent',
-            //     useremail: user.email
-            // }
         });
     } catch (e) {
         console.log('error', e.message)
