@@ -1,13 +1,7 @@
-const {google} = require("googleapis");
-const axios = require('axios');
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { gmail } = require("googleapis/build/src/apis/gmail");
-const uuid = require('uuid');
 const fs = require("fs");
 const multer = require('multer');
 const {Joblist} = require('../schemas/JoblistSchema');
 const {Timesheets} = require('../schemas/TimesheetsSchema');
-
 
 // const upload = multer({
 //     dest: '.tmp', // this saves your file into a directory called "uploads"
