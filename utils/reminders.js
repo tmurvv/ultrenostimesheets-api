@@ -11,6 +11,7 @@ const {Users} = require('../schemas/UserSchema');
             console.log('inside try')
             // get users and timesheets
             const userList = await Users.find();
+            console.log('after await userList:', userList)
             const timesheetList = await Timesheets.find();
             // filter Timesheets for last three business days
             const recentSheets = [];
