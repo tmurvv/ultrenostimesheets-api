@@ -2,7 +2,7 @@ const { timesheetReminder } = require('../assets/emailTemplates/timesheetReminde
 const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {Users} = require('../schemas/UserSchema');
 
-(async () => {
+async function sendEmails() {
     console.log('00000000000000000000000000000000000000000');
     const today = new Date();
     // if (today.getDay()>0&&today.getDay()<7) {
@@ -44,4 +44,5 @@ const {Users} = require('../schemas/UserSchema');
             // this should catch all exceptions
         }
     // }   
-})();
+};
+sendEmails();
