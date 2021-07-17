@@ -6,7 +6,9 @@ const {Users} = require('../schemas/UserSchema');
     console.log('00000000000000000000000000000000000000000');
     const today = new Date();
     // if (today.getDay()>0&&today.getDay()<7) {
+        console.log('outside try')
         try {
+            console.log('inside try')
             // get users and timesheets
             const userList = await Users.find();
             const timesheetList = await Timesheets.find();
