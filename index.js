@@ -23,7 +23,7 @@ const supportListRouter = require('./routes/supportListRoutes');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const {Joblist} = require('./schemas/JoblistSchema');
-// const {reminders} = require('./utils/reminders');
+const {reminders} = require('./utils/reminders');
 
 // program setup
 const app = express();
