@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
-const { timesheetReminder } = require('../assets/emailTemplates/timesheetReminder');
-const {Timesheets} = require('../schemas/TimesheetsSchema');
-const {Users} = require('../schemas/UserSchema');
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 const DB = process.env.DATABASE.replace(
     '<PASSWORD>',
     process.env.DATABASE_PASSWORD
 );
+const {timesheetReminder} = require('../assets/emailTemplates/timesheetReminder');
+const {Timesheets} = require('../schemas/TimesheetsSchema');
+const {Users} = require('../schemas/UserSchema');
 
 function sendEmails() {
     console.log('in sendEmails')
