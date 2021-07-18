@@ -24,7 +24,7 @@ const supportListRouter = require('./routes/supportListRoutes');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const {Joblist} = require('./schemas/JoblistSchema');
-const {reminders} = require('./utils/reminders');
+// const {reminders} = require('./utils/reminders');
 
 // program setup
 const app = express();
@@ -88,7 +88,6 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             await Joblist.updateMany({current: true, current: false})
             console.log('here')
             for (const item of contentArray) {
-                
                 const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
                 console.log('appendItem:', appendItem)
                 try {

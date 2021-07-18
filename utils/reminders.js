@@ -51,9 +51,9 @@ function sendEmails() {
                     if (timesheetReminder(user)) {
                         console.log('timesheetreminder success', user.email);
                         // update user field lastReminderSent to today's date
-                        Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
-                        .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
-                        .catch(()=>console.log(`Error updating reminderLastSent for ${user.email}`));
+                        // Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
+                        // .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
+                        // .catch(()=>console.log(`Error updating reminderLastSent for ${user.email}`));
                     }
                 }
             });
