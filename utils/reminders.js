@@ -31,18 +31,31 @@ function sendEmails() {
             });
             // check if active users have a timesheet in the last 3 business days
             let found; 
-            userList.map(async user=>{
+            userList.map(user=>{
                 found=false;
                 recentSheets.map(sheet=>{
                     // console.log('recent sheets map', sheet.userid, user.email)
                     if (sheet.userid === user.email) {found=true;}
+                    // console.log(user.email, user.reminderLastSent)
                 });
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log('NOT FOUND', user.email);
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log(new Date().getTime());
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log(user.reminderLastSent);
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log(new Date(user.reminderLastSent).getTime());
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log((new Date().getTime())-(new Date(user.reminderLastSent).getTime()), oneWorkdayMillies);
-                if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies);
+                if (!found&&user.reminderLastSent!==undefined) console.log('NOT FOUND', user.email);
+                if (!found&&user.reminderLastSent!==undefined) console.log(new Date().getTime());
+                if (!found&&user.reminderLastSent!==undefined) console.log(user);
+                if (!found&&user.reminderLastSent!==undefined) console.log(user.reminderLastSent);
+                if (!found&&user.reminderLastSent!==undefined) console.log(new Date(user.reminderLastSent).getTime());
+                if (!found&&user.reminderLastSent!==undefined) console.log((new Date().getTime())-(new Date(user.reminderLastSent).getTime()), oneWorkdayMillies);
+                if (!found&&user.reminderLastSent!==undefined) console.log((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies);
+                // if no recent timesheet, send email (if one not already sent within the last day)
+                // if (!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
+                if (user.email==='tisha@findaharp.com'&&!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
+                    if (timesheetReminder(user)) {
+                        console.log('timesheetreminder success', user.email);
+                        // update user field lastReminderSent to today's date
+                        Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
+                        .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
+                        .catch(()=>console.log(`Error updating reminderLastSent for ${user.email}`));
+                    }
+                }
             });
         })
         .catch((e)=>console.log('error from timesheet fetch', e.message))
@@ -88,17 +101,17 @@ function sendEmails() {
                     //     if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log(user.reminderLastSent);
                     //     if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log(new Date(user.reminderLastSent).getTime());
                     //     if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined) console.log((new Date().getTime())-(new Date(user.reminderLastSent).getTime()), oneWorkdayMillies);
-        //                 // if no recent timesheet, send email (if one not already sent within the last day)
-        //                 // if (!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
-        //                 if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
-        //                     if (timesheetReminder(user)) {
-        //                         console.log('timesheetreminder success', user.email);
-        //                         // update user field lastReminderSent to today's date
-        //                         Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
-        //                         .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
-        //                         .catch(()=>console.log(`Error updating reminderLastSent for ${user.email}`));
-        //                     }
-        //                 }
+                        // // if no recent timesheet, send email (if one not already sent within the last day)
+                        // // if (!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
+                        // if (user.email==='tisha@findaharp.com'&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) {
+                        //     if (timesheetReminder(user)) {
+                        //         console.log('timesheetreminder success', user.email);
+                        //         // update user field lastReminderSent to today's date
+                        //         Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
+                        //         .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
+                        //         .catch(()=>console.log(`Error updating reminderLastSent for ${user.email}`));
+                        //     }
+                        // }
         //             });
         //         });
         //     })
