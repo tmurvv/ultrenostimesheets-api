@@ -3,19 +3,22 @@ const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {Users} = require('../schemas/UserSchema');
 
 function sendEmails() {
+    console.log('in sendEmails')
     const today = new Date();
     let userList;
     let timesheetList;
     // Heroku Scheduler not running async await portions of code so promises used instead
-    if (today.getDay()>0&&today.getDay()<6) {
+    // if (today.getDay()>0&&today.getDay()<6) {
         // Get Users
         Users
             .find()
             .then(function(items) {
+                console.log('items (users):', items.length)
                 userList=items;
                 const sheets = Timesheets.find()
                 // Get timesheets within last 3 business days
                 .then(function(timesheets){
+                    console.log('timesheets:', timesheets.length)
                     timesheetList=timesheets;
                     // filter Timesheets for last three business days
                     const recentSheets = [];
@@ -32,11 +35,13 @@ function sendEmails() {
                     userList.map(async user=>{
                         found=false;
                         recentSheets.map(sheet=>{
+                            console.log('recent sheets map', sheet.userid, user.email)
                             if (sheet.userid === user.email) found=true;
                         });
                         // if no recent timesheet, send email (if one not already sent within the last day)
                         if (!found&&user.reminderLastSent!==undefined&&(new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=86400000) {
                             if (timesheetReminder(user)) {
+                                console.log('timesheetreminder success', user.email);
                                 // update user field lastReminderSent to today's date
                                 Users.findOneAndUpdate({email: user.email}, {reminderLastSent: new Date()})
                                 .then(()=>console.log(`Success sending reminder email and updating reminderLastSent for ${user.email}`))
@@ -49,6 +54,6 @@ function sendEmails() {
             .catch(function(err) {
                 console.log('Error sending reminder email', err.message);
             });
-    }
+    // }
 };
 sendEmails();
