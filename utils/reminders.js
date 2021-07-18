@@ -10,7 +10,17 @@ function sendEmails() {
 
     // TESTING AREA
     Users.find()
-        .then((userItems)=>console.log('inusers', userItems.length)).catch((e)=>console.log('error from here', e.message))
+    .then(function(items) {
+        console.log('items (users):', items.length)
+        userList=items;
+        const sheets = Timesheets.find()
+        // Get timesheets within last 3 business days
+        .then(function(timesheets){
+            console.log('timesheets:', timesheets.length)
+        })
+        .catch((e)=>console.log('error from timesheet fetch', e.message))
+    })
+    .catch((e)=>console.log('error from user fetch', e.message))
 
 
 
@@ -19,13 +29,13 @@ function sendEmails() {
     // if (today.getDay()>0&&today.getDay()<6) {
         // // Get Users
         // Users.find()
-        //     .then(function(items) {
-        //         console.log('items (users):', items.length)
-        //         userList=items;
-        //         const sheets = Timesheets.find()
-        //         // Get timesheets within last 3 business days
-        //         .then(function(timesheets){
-        //             console.log('timesheets:', timesheets.length)
+            // .then(function(items) {
+            //     console.log('items (users):', items.length)
+            //     userList=items;
+            //     const sheets = Timesheets.find()
+            //     // Get timesheets within last 3 business days
+            //     .then(function(timesheets){
+            //         console.log('timesheets:', timesheets.length)
         //             timesheetList=timesheets;
         //             // filter Timesheets for last three business days
         //             const recentSheets = [];
