@@ -10,7 +10,7 @@ function sendEmails() {
 
     // TESTING AREA
     Users.find()
-        .then((userItems)=>console.log('inusers', userItems.length))
+        .then((userItems)=>console.log('inusers', userItems.length)).catch((e)=>console.log('error from here', e.message))
 
 
 
