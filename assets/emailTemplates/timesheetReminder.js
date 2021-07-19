@@ -21,7 +21,7 @@ exports.timesheetReminder = async (user) => {
                             <h2>Notification of reminder email sent.</h2>
                             <h2>Message from Ultimate Renovations Timesheets</h2>
                             <p>Hello ${user.firstname} ${user.lastname},<br><br>It has been more than three business days since your last timesheet entry.</p>
-                            <p><a style="color:#4054b2;font-weight: 600;font-size: 24px;" href="https://ultrenostimesheets.herokuapp.com"> Click here </a> to enter your timesheet(s) and get paid!</p>
+                            <p><a style="color:#4054b2;font-weight: 600;font-size: 24px;" href="https://ultrenostimesheets.take2tech.ca"> Click here </a> to enter your timesheet(s) and get paid!</p>
                             <p>Please contact the office if you have any questions.</p>
                             <p>Thank you,<br/>Ultimate Renovations</p>
                         </body> 
@@ -46,7 +46,7 @@ exports.timesheetReminder = async (user) => {
                                                     line-height:1.8em;">
                             <h2>Message from Ultimate Renovations Timesheets</h2>
                             <p>Hello ${user.firstname} ${user.lastname},<br><br>It has been more than three business days since your last timesheet entry.</p>
-                            <p><a style="color:#4054b2;font-weight: 600;font-size: 24px;" href="https://ultrenostimesheets.herokuapp.com"> Click here </a> to enter your timesheet(s) and get paid!</p>
+                            <p><a style="color:#4054b2;font-weight: 600;font-size: 24px;" href="https://ultrenostimesheets.take2tech.ca"> Click here </a> to enter your timesheet(s) and get paid!</p>
                             <p>Please contact the office if you have any questions.</p>
                             <p>Thank you,<br/>Ultimate Renovations</p>
                         </body>

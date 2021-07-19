@@ -16,14 +16,14 @@ const {Timesheets} = require('../schemas/TimesheetsSchema');
 // // It's very crucial that the file name matches the name attribute in your html
 // app.post('/api/v1/ultrenostimesheets/admin/uploadwips', upload.single('file-to-upload'), (req, res) => {
 //     // res.redirect('http://localhost:3006/?success=true');
-//     res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+//     res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 // });
 
 
 // exports.uploadJobList = async (req, res) => {
 //     upload.single('file-to-upload')
 //     // res.redirect('http://localhost:3006/?success=true');
-//     // res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+//     // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 //     // fs.readFile('')
 //     //remove id
 //     res.status(200).json({

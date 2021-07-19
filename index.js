@@ -63,7 +63,7 @@ const upload = multer({
     onError : function(err, next) {
         console.log('error', err);
         // res.redirect('http://localhost:3006/?success=false');
-        res.redirect('https://ultrenostimesheets.herokuapp.com/?success=false');
+        res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
     }
 }); 
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
@@ -103,7 +103,7 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     // fs.readFile('')
     //remove id 
     // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://ultrenostimesheets.herokuapp.com/?success=true');
+    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 });
 
 //Router 
