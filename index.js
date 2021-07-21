@@ -62,8 +62,8 @@ const upload = multer({
     dest: './tmp', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
         console.log('error', err);
-        // res.redirect('http://localhost:3006/?success=false');
-        res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
+        res.redirect('http://localhost:3006/?success=false');
+        // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
     }
 }); 
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
