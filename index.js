@@ -62,8 +62,8 @@ const upload = multer({
     dest: './tmp', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
         console.log('error', err);
-        res.redirect('http://localhost:3006/?success=false');
-        // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
+        // res.redirect('http://localhost:3006/?success=false');
+        res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
     }
 }); 
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
@@ -151,7 +151,7 @@ app.use('/api/v1/ultrenostimesheets/admin', adminRouter);
 
 // Catch invalid routes
 app.all('*', (req,res,next) => {
-    next(console.log(`Web address 'take2tech.herokuapp.com${req.originalUrl}' not found. Please see take2tech-api docs for valid addresses.`, 404));
+    next(console.log(`Web address not found. Please see take2tech-api docs for valid addresses.`, 404));
 });
 
 // app.use(globalErrorHandler);
