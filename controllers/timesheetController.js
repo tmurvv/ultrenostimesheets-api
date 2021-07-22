@@ -27,7 +27,6 @@ exports.viewTimesheets = async (req, res) => {
     }
 }
 exports.viewTimesheetsByUser = async (req, res) => {
-    console.log(req.body)
     try {
         const timesheets = await Timesheets.find({userid: req.body.userid});
         
@@ -81,10 +80,8 @@ exports.viewTimesheetsByUser = async (req, res) => {
     // }
 }
 exports.appendTimesheets = async (req, res) => {
-    console.log('append timesheets')
     try {
         const addedtimesheet = await Timesheets.create(req.body);
-        console.log('addedtimesheet:', addedtimesheet)
         if (!addedtimesheet) throw new Error('Something went wrong on signup.');
         res.status(200).json({
             title: 'Ultimate Renovations Timesheets |  Enter Timesheet',
@@ -101,12 +98,10 @@ exports.appendTimesheets = async (req, res) => {
     }
 }
 exports.updateTimesheets = async (req, res) => {
-    console.log('imin update',req.body)
     //remove id
     
     try {
         const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
-        console.log('updatedtimesheet:', updatedtimesheet)
         res.status(200).json({
             title: 'ultrenostimesheets | Update Timesheet',
             status: 'success',
@@ -122,7 +117,6 @@ exports.updateTimesheets = async (req, res) => {
     }
 }
 exports.deleteTimesheets = async (req, res) => {
-    console.log(req.body)
     try {
         const delItem = await Timesheets.findByIdAndDelete(req.body.delid);
         if (!delItem) throw new Error('Entry not found.')

@@ -23,6 +23,7 @@ const supportListRouter = require('./routes/supportListRoutes');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const {Joblist} = require('./schemas/JoblistSchema');
+const {Tasklist} = require('./schemas/TasklistSchema');
 // const {reminders} = require('./utils/reminders');
 
 // program setup
@@ -71,7 +72,6 @@ const upload = multer({
 // });
 // Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-to-upload'), async (req, res) => {
-    console.log('inupload')
     upload.single('file-to-upload')
     
     const filename=req.file.filename;
@@ -85,7 +85,6 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             content = util.format(data,'');
             var contentArray = content.split('\n');
             await Joblist.updateMany({current: true, current: false})
-            console.log('here')
             for (const item of contentArray) {
                 const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
                 console.log('appendItem:', appendItem)
@@ -102,8 +101,40 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     readTextFile(`download/${filename}`);
     // fs.readFile('')
     //remove id 
-    // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+    res.redirect('http://localhost:3006/?success=true');
+    // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+});
+// Be sure the file name matches the name attribute in your html
+app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-to-upload'), async (req, res) => {
+    upload.single('file-to-upload')
+    
+    const filename=req.file.filename;
+    function readTextFile(file) {
+        var content;
+        fs.readFile(path.join(__dirname, "tmp", filename), 'utf8', async function (err, data) {
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            }
+            content = util.format(data,'');
+            var contentArray = content.split('\n');
+            await Tasklist.updateMany({current: true, current: false})
+            for (const item of contentArray) {
+                const appendItem = {task: item.replace('\r',''), current: true};
+                try {
+                    await Tasklist.create(appendItem);
+                } catch(e) {
+                    console.log('error on create', e.message)
+                }  
+            }
+        });
+    }
+     
+    readTextFile(`download/${filename}`);
+    // fs.readFile('')
+    //remove id 
+    res.redirect('http://localhost:3006/?success=true');
+    // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 });
 
 //Router 

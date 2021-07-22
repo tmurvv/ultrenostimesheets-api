@@ -10,7 +10,6 @@ const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {Users} = require('../schemas/UserSchema');
 
 function sendEmails() {
-    console.log('in sendEmails')
     const today = new Date();
     let userList;
     let timesheetList;

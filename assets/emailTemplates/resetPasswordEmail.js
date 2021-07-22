@@ -2,7 +2,6 @@ const { TRANSPORTER } = require('../constants/emailTransport');
 const btoa = require('btoa');
 
 exports.resetPasswordEmail = async (user) => {
-    console.log('in email content', user.email)
     // encode email
     const emailEncode = btoa(user.email);
 
@@ -37,5 +36,4 @@ exports.resetPasswordEmail = async (user) => {
             }
         }
     // })();
-    console.log('end')
 };

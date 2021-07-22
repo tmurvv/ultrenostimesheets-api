@@ -95,14 +95,12 @@ exports.signup = async (req, res) => {
     
 }
 exports.login = async (req, res) => {
-    console.log('in login')
     try {
         // find User
         let userInfo;
         // if not cookie check
         if (req.body.email) {
             userInfo = await Users.findOne({email: req.body.email});
-            console.log('userInfo:', userInfo)
             if (!userInfo) throw new Error('User not found.');
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
@@ -141,14 +139,12 @@ exports.login = async (req, res) => {
 
 
 exports.sendResetEmail = async (req, res) => {
-    console.log('in sendresetemail', req.body.useremail)
     try {
         // find user
         const user = await Users.find({email: req.body.useremail});
         if (!user) throw new Error('Email not found.');
         // send reset email
         try{
-            console.log('ready for send email function')
             resetPasswordEmail(user[0]);
         } catch(e) {
             console.log(e.message)
@@ -267,9 +263,7 @@ exports.sendResetEmail = async (req, res) => {
 //     }
 // }
 exports.resetPassword = async (req, res) => {
-    console.log('inpassword', req.body.newpassword)
     const useremail = req.body.useremail;
-    console.log('useremail:', useremail)
     try {
         // update password
         const user = await Users.findOne({email: useremail});
