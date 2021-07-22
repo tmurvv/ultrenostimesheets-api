@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
-const DB = process.env.DATABASE.replace(
-    '<PASSWORD>',
-    process.env.DATABASE_PASSWORD
-);
+const DB = "mongodb+srv://tmurvv:caEhq0cvjVtSjatA@cluster0-uf5qd.mongodb.net/ultrenos?retryWrites=true&w=majority";
 const {timesheetReminder} = require('../assets/emailTemplates/timesheetReminder');
 const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {Users} = require('../schemas/UserSchema');
