@@ -101,8 +101,8 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     readTextFile(`download/${filename}`);
     // fs.readFile('')
     //remove id 
-    res.redirect('http://localhost:3006/?success=true');
-    // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+    // res.redirect('http://localhost:3006/?success=true');
+    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 });
 // Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-to-upload'), async (req, res) => {
@@ -133,8 +133,8 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-
     readTextFile(`download/${filename}`);
     // fs.readFile('')
     //remove id 
-    res.redirect('http://localhost:3006/?success=true');
-    // res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+    // res.redirect('http://localhost:3006/?success=true');
+    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
 });
 
 //Router 
