@@ -40,7 +40,7 @@ exports.timesheetReminder = async (user) => {
             from: '<tech@take2tech.ca>', // sender address
             to: `${user.email}`, // list of receivers
             subject: `Timesheet Reminder | Ultimate Renovations`,
-            text: `Welcome ${user.firstname} ${user.lastname}, it has been more than three days since your last timesheet entry.`,
+            text: `Hello ${user.firstname} ${user.lastname}, it has been more than three days since your last timesheet entry.`,
             html: `<html>
                         <body style="color:#083a08; font-family: Lato, Arial, Helvetica, sans-serif;
                                                     line-height:1.8em;">
