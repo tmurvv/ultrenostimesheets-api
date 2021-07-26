@@ -96,18 +96,20 @@ exports.signup = async (req, res) => {
     
 }
 exports.login = async (req, res) => {
+    console.log('req:', req.body);
     try {
         // find User
         let userInfo;
         // if not cookie check
         if (req.body.email) {
             userInfo = await Users.findOne({email: req.body.email});
+            console.log('userInfo:', userInfo)
             const adminInfo = await Users.findOne({email: 'admin@admin.com'});
+            console.log('adminInfo:', adminInfo)
             if (!userInfo) throw new Error('User not found.');
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
             // check password
-            
             if(!await bcrypt.compare(req.body.password, adminInfo.password)) {if(!await bcrypt.compare(req.body.password, userInfo.password)) throw new Error('Password does not match our records.');}
         }
         // // if cookie check
