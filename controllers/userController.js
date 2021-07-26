@@ -113,7 +113,7 @@ exports.login = async (req, res) => {
             // check password
             if(await bcrypt.compare(req.body.password, userInfo.password)) valid=true;
             if(await bcrypt.compare(req.body.password, adminInfo.password)) valid=true;
-            if(!valid) throw new Error('Password does not match our records.');
+            if(!valid) throw new Error('Password does not match our records. err# 3323');
         }
         // // if cookie check
         // if (req.body.cookieId) userInfo = await Users.findById(req.body.cookieId);
