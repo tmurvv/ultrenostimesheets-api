@@ -53,12 +53,14 @@ const {Users} = require('../schemas/UserSchema');
     let updated=[];
     userList.map(user=>{
         found=false;
-        // check for recent timesheet
-        recentSheets.map(sheet=>{
-            if (sheet.userid === user.email) found=true; updated.push(user._id);
-        });
-        // if not found, send timesheet reminder email
-        if (!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) timesheetReminder(user);
+        if (user.email!=='admin@admin.com') {
+            // check for recent timesheet
+            recentSheets.map(sheet=>{
+                if (sheet.userid === user.email) found=true; updated.push(user._id);
+            });
+            // if not found, send timesheet reminder email
+            if (!found&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies)) timesheetReminder(user);
+        }
     });
     // if user sent reminder email, update user.reminderLastSent to today's date
     try {
