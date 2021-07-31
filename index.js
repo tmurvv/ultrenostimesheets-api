@@ -87,7 +87,6 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             await Joblist.updateMany({current: true, current: false})
             for (const item of contentArray) {
                 const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
-                console.log('appendItem:', appendItem)
                 try {
                     await Joblist.create(appendItem);
                 } catch(e) {

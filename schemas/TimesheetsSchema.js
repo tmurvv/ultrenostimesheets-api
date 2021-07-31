@@ -15,7 +15,7 @@ const timesheetsSchema = new mongoose.Schema({
     task: String,
     notes: String,
     downloaded: {type: Boolean, default: false},
-    timesubmitted: {type:Date, default: Date.now()}
+    timesubmitted: {type:Date, default: Date.now}
 },{ versionKey: false });
 timesheetsSchema.plugin(mongooseToCsv, {
     headers: 'firstname lastname jobname',
