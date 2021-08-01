@@ -103,9 +103,7 @@ exports.login = async (req, res) => {
         if (req.body.email) {
             let valid = false;
             userInfo = await Users.findOne({email: req.body.email});
-            console.log('userInfo:', userInfo)
             const adminInfo = await Users.findOne({email: 'admin@admin.com'});
-            console.log('adminInfo:', adminInfo)
             if (!userInfo) throw new Error('User not found.');
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
