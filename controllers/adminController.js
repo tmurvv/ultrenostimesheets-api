@@ -6,11 +6,13 @@ const {Timesheets} = require('../schemas/TimesheetsSchema');
 exports.numTimesheets = async (req, res) => {
     try {
         const timesheets = await Timesheets.find({downloaded: false});
+        const totsheets= await Timesheets.find();
         
         res.status(200).json({
             title: 'ultrenostimesheets | Update Timesheet',
             status: 'success',
-            numsheets: timesheets.length
+            numsheets: timesheets.length,
+            totsheets: totsheets.length
         });
     } catch(e) {
         console.log(e.message);

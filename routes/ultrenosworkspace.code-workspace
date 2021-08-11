@@ -7,5 +7,7 @@
             "path": "..\\..\\ultrenos-fe"
         }
     ],
-    "settings": {}
+    "settings": {
+        "workbench.colorTheme": "Solarized Light"
+    }
 }

@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
             // check password
             if(await bcrypt.compare(req.body.password, userInfo.password)) valid=true;
             if(await bcrypt.compare(req.body.password, adminInfo.password)) valid=true;
-            if(!valid) throw new Error('Password does not match our records. err# 3323');
+            if(!valid) throw new Error('Password does not match our records.');
         }
         // // if cookie check
         // if (req.body.cookieId) userInfo = await Users.findById(req.body.cookieId);
@@ -122,13 +122,14 @@ exports.login = async (req, res) => {
         // add JWT and send
         // createSendToken(userCopy, 200, res); 
         res.status(200).json({
-            title: 'signup',
+            title: 'login',
             status: 'success',
             data: userCopy
         });   
     } catch (e) {
+        console.log('error', e.message)
         if (!req.body.cookieId) res.status(400).json({
-            title: 'FindAHarp.com | Login User',
+            title: 'ultrenostimesheets.take2tech.ca | Login User',
             status: 'fail',
             message: e.message,
             useremail: req.body.email
