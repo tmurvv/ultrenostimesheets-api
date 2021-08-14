@@ -1,18 +1,25 @@
 const fs = require("fs");
-const multer = require('multer');
 const {Joblist} = require('../schemas/JoblistSchema');
+const {Tasklist} = require('../schemas/TasklistSchema');
 const {Timesheets} = require('../schemas/TimesheetsSchema');
+const {Users} = require('../schemas/UserSchema');
 
 exports.numTimesheets = async (req, res) => {
     try {
         const timesheets = await Timesheets.find({downloaded: false});
         const totsheets= await Timesheets.find();
+        const totusers= await Users.find();
+        const jobs= await Joblist.find();
+        const tasks= await Tasklist.find();
         
         res.status(200).json({
             title: 'ultrenostimesheets | Update Timesheet',
             status: 'success',
             numsheets: timesheets.length,
-            totsheets: totsheets.length
+            totsheets: totsheets.length,
+            totusers: totusers.length,
+            jobs,
+            tasks
         });
     } catch(e) {
         console.log(e.message);
@@ -123,13 +130,6 @@ exports.downloadAllTimesheets = async (req, res) => {
         fs.writeFile(file, timesheetcsv, ()=>{
             res.download(file);
         })
-        try {
-            timesheets.map(async sheet=>{
-                await Timesheets.findByIdAndUpdate(sheet._id, {downloaded: true});
-            });
-        } catch (e) {
-            throw new Error("Error marking timesheets downloaded");
-        }
         res.status(200, {
             status: 'success',
             title: 'Ultimate Renovations | Download Timesheets'
