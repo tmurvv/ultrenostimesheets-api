@@ -208,62 +208,68 @@ exports.sendResetEmail = async (req, res) => {
 //         res.redirect('https://findaharp.com?activateemail=no')
 //     }
 // };
-// exports.updateUser = async (req, res) => {
-//     // console.log(req.body)
-//     // get user  
-//     const userInfo = await Users.findById(req.params.userid);
-//     // error if no user
-//     if (!userInfo) {
-//         console.log('nouser')
-//         return res.status(500).json({
-//             title: 'FindAHarp.com | Update User',
-//             status: 'fail',
-//             message: `User not found.`
-//         });
-//     }
-//     // check password
-//     if(!await bcrypt.compare(req.body.password, userInfo.password)) {
-//         console.log('passwordfail')
-//         return res.status(500).json({
-//             title: 'FindAHarp.com | Update User',
-//             status: 'fail',
-//             message: `Password incorrect.`
-//         });
-//     }
-//     // create new updateUser object
-//     const updateUser = {
-//         firstname: req.body.firstname,
-//         lastname: req.body.lastname,
-//         email: req.body.email,
-//         newsletter: req.body.newsletter,
-//         distanceunit: req.body.distanceunit,
-//         currency: req.body.currency,
-//         agreements: req.body.agreements
-//     }
-//     // update the user
-//     try {
-//         await Users.findByIdAndUpdate(userInfo._id, updateUser);
-//         const updatedUser = await Users.findById(userInfo._id);
-//         if (!updatedUser) throw new Error();
-//         let userCopy = {...updatedUser._doc};
-//         delete userCopy.password;
-//         res.status(200).json({
-//             title: 'FindAHarp.com | Update User',
-//             status: 'success',
-//             message: 'User updated',
-//             userCopy
-//         });
-//     } catch (e) {
-//         console.log(e.message)
-//         res.status(500).json({
-//             title: 'FindAHarp.com | Update User',
-//             status: 'fail',
-//             data: {
-//                 message: `Something went wrong while updating user: ${e.message}`
-//             }
-//         });
-//     }
-// }
+exports.updateUser = async (req, res) => {
+    // get user  
+    const userInfo = await Users.find({email: req.body.email});
+    const adminInfo = await Users.find({email: req.body.adminemail});
+    // error if no user
+    if (!userInfo) {
+        return res.status(500).json({
+            title: 'UltRenos Timesheets | Update User',
+            status: 'fail',
+            message: `User not found.`
+        });
+    }
+    // error if no admin
+    if (!adminInfo) {
+        return res.status(500).json({
+            title: 'UltRenos Timesheets | Update User',
+            status: 'fail',
+            message: `Admin not found.`
+        });
+    }
+    // check password
+    try {
+        if (!await bcrypt.compare(req.body.password, adminInfo[0].password)) throw new Error();
+    } catch(e) {
+        return res.status(400).json({
+            title: 'ultrenostimesheets | Update User',
+            status: 'fail',
+            message: `Admin password does not match our records.`
+        });
+    }
+    // create new updateUser object
+    const updateUser = {
+        // firstname: req.body.firstname,
+        // lastname: req.body.lastname,
+        // email: req.body.email,
+        role: req.body.role
+    }
+    // update the user
+    try {
+        const returnObj = await Users.findOneAndUpdate({email: req.body.email}, updateUser, {new: true});;
+        const updatedUser = await Users({email: userInfo.email});
+        if (!updatedUser) throw new Error();
+        let userCopy = {...updatedUser._doc};
+        delete userCopy.password;
+        res.status(200).json({
+            title: 'UltRenos Timesheets | Update User',
+            status: 'success',
+            message: 'User updated',
+            userCopy,
+            returnObj
+        });
+    } catch (e) {
+        console.log(e.message)
+        res.status(500).json({
+            title: 'UltRenos Timesheets | Update User',
+            status: 'fail',
+            data: {
+                message: `Something went wrong while updating user: ${e.message}`
+            }
+        });
+    }
+}
 exports.resetPassword = async (req, res) => {
     const useremail = req.body.useremail;
     try {
@@ -370,57 +376,57 @@ exports.resetPassword = async (req, res) => {
 //     }   
 // }
 
-// exports.deleteUser = async (req, res) => {
-//     // get user  
-//     const userInfo = await Users.findById(req.params.userid);
-//     // error if no user
-//     if (!userInfo) {
-//         return res.status(500).json({
-//             title: 'FindAHarp.com | Update User',
-//             status: 'fail',
-//             message: `User not found.`
-//         });
-//     }
-//     // check password
-//     try {
-//         if(!await bcrypt.compare(req.query.editpassword, userInfo.password)) {
-//             return res.status(500).json({
-//                 title: 'FindAHarp.com | Update User',
-//                 status: 'fail',
-//                 message: `Password incorrect.`
-//             });
-//         }
-//     } catch(e) {
-//         return res.status(500).json({
-//             title: 'FindAHarp.com | Delete User',
-//             status: 'fail',
-//             data: {
-//                 message: `Something went wrong while deleting user: ${e.message}`
-//             }
-//         });
-//     }
-    
-//     try {
-//         // find and delete user
-//         const user = await Users.findByIdAndDelete(req.params.userid);
-//         // throw error if not successful
-//         if (!user) throw new Error();
-//         // return result
-//         return res.status(200).json({
-//             title: 'FindAHarp.com | Delete User',
-//             status: 'success',
-//             data: {
-//                 message: 'User deleted',
-//                 user
-//             }
-//         });
-//     } catch (e) {
-//         return res.status(500).json({
-//             title: 'FindAHarp.com | Delete User',
-//             status: 'fail',
-//             data: {
-//                 message: `Something went wrong while deleting user: ${e.message}`
-//             }
-//         });
-//     }
-// }
+exports.deleteUser = async (req, res) => {
+    // get user  
+    const userInfo = await Users.find({email: req.body.email});
+    const adminInfo = await Users.find({email: req.body.adminemail});
+    // error if no user
+    if (!userInfo) {
+        return res.status(500).json({
+            title: 'UltRenos Timesheets | Delete User',
+            status: 'fail',
+            message: `User not found.`
+        });
+    }
+    // error if no admin
+    if (!adminInfo) {
+        return res.status(500).json({
+            title: 'UltRenos Timesheets | Delete User',
+            status: 'fail',
+            message: `Admin not found.`
+        });
+    }
+    // check password
+    try {
+        if (!await bcrypt.compare(req.body.password, adminInfo[0].password)) throw new Error();
+    } catch(e) {
+        return res.status(400).json({
+            title: 'ultrenostimesheets | Delete User',
+            status: 'fail',
+            message: `Admin password does not match our records.`
+        });
+    }
+    try {
+        // find and delete user
+        const user = await Users.findOneAndDelete({email: req.body.email});
+        // throw error if not successful
+        if (!user) throw new Error();
+        // return result
+        return res.status(200).json({
+            title: 'Ultrenostimesheets | Delete User',
+            status: 'success',
+            data: {
+                message: 'User deleted',
+                user
+            }
+        });
+    } catch (e) {
+        return res.status(500).json({
+            title: 'Ultrenostimesheets | Delete User',
+            status: 'fail',
+            data: {
+                message: `Something went wrong while deleting user: ${e.message}`
+            }
+        });
+    }
+}

@@ -9,8 +9,8 @@ exports.numTimesheets = async (req, res) => {
         const timesheets = await Timesheets.find({downloaded: false});
         const totsheets= await Timesheets.find();
         const totusers= await Users.find();
-        const jobs= await Joblist.find();
-        const tasks= await Tasklist.find();
+        const jobs= await Joblist.find({current: true});
+        const tasks= await Tasklist.find({current: true});
         
         res.status(200).json({
             title: 'ultrenostimesheets | Update Timesheet',
@@ -92,12 +92,12 @@ exports.downloadNewTimesheets = async (req, res) => {
 }
 exports.downloadAllTimesheets = async (req, res) => {
     function getMinutesWorked(starttime, endtime, lunchtime) {
-        // shortcut if endtime before starttime
+        // validate starttime before endtime
         if ((new Date(endtime)).getTime()-(new Date(starttime)).getTime()<=0) return -1;
         // calculate time worked
         const lunchMillies = Number(String(lunchtime).substr(0,2)*60*1000);
         const milliesWorked = (new Date(endtime)).getTime()-(new Date(starttime)).getTime()-lunchMillies;
-        // short cut is lunchtime greater than time worked
+        // validate lunchtime longer than hours worked
         if (milliesWorked<=0) return -2;
         //return minutes worked
         return Math.round((milliesWorked/60)/1000);
