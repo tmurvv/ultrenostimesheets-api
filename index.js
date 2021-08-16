@@ -86,9 +86,16 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
             var contentArray = content.split('\n');
             await Joblist.updateMany({current: true, current: false})
             for (const item of contentArray) {
-                const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
                 try {
-                    await Joblist.create(appendItem);
+                    if (item.indexOf('\t')>0) {
+                        const appendItem = {jobid: item.split('\t')[0], jobname: (item.split('\t')[1])&&(item.split('\t')[1]).replace('\r',''), current: true};
+                        await Joblist.create(appendItem);
+                    } else if(item.indexOf(' ')>0) {
+                        const appendItem = {jobid: item.split(' ')[0], jobname: (item.split(' ')[1])&&(item.split(' ')[1]).replace('\r',''), current: true};
+                        await Joblist.create(appendItem);
+                    } else {
+                        // continue
+                    }
                 } catch(e) {
                     console.log('error on create', e.message)
                 }
