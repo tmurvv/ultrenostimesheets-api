@@ -107,8 +107,12 @@ exports.login = async (req, res) => {
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
             // check password
-            if(await bcrypt.compare(req.body.password, userInfo.password)) valid=true;
-            if(await bcrypt.compare(req.body.password, adminInfo.password)) valid=true;
+            if(userInfo&&userInfo.password) {
+                if(await bcrypt.compare(req.body.password, userInfo.password)) valid=true;
+            }
+            if(adminInfo&&adminInfo.password) {
+                if(await bcrypt.compare(req.body.password, adminInfo.password)) valid=true;
+            }
             if(!valid) throw new Error('Password does not match our records.');
         }
         // // if cookie check
