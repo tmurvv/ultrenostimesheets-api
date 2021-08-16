@@ -216,44 +216,53 @@ exports.updateUser = async (req, res) => {
     // get user  
     const userInfo = await Users.find({email: req.body.email});
     const adminInfo = await Users.find({email: req.body.adminemail});
+    console.log('userInfo:', userInfo)
+    console.log('adminInfo:', adminInfo)
     // error if no user
-    if (!userInfo) {
-        return res.status(500).json({
+    if (!userInfo||userInfo.length<1) {
+        return res.status(400).json({
             title: 'UltRenos Timesheets | Update User',
             status: 'fail',
             message: `User not found.`
         });
     }
-    // error if no admin
-    if (!adminInfo) {
-        return res.status(500).json({
-            title: 'UltRenos Timesheets | Update User',
-            status: 'fail',
-            message: `Admin not found.`
-        });
-    }
-    // check password
-    try {
-        if (!await bcrypt.compare(req.body.password, adminInfo[0].password)) throw new Error();
-    } catch(e) {
-        return res.status(400).json({
-            title: 'ultrenostimesheets | Update User',
-            status: 'fail',
-            message: `Admin password does not match our records.`
-        });
-    }
-    // create new updateUser object
-    const updateUser = {
-        // firstname: req.body.firstname,
-        // lastname: req.body.lastname,
-        // email: req.body.email,
-        role: req.body.role
+    let updateUser;
+    if (req.body.role) {
+        // create new updateUser object
+        updateUser = {
+            role: req.body.role
+        }
+        // error if no admin
+        if (!adminInfo) {
+            return res.status(400).json({
+                title: 'UltRenos Timesheets | Update User',
+                status: 'fail',
+                message: `Admin not found.`
+            });
+        }
+        // check password
+        try {
+            if (!await bcrypt.compare(req.body.password, adminInfo[0].password)) throw new Error();
+        } catch(e) {
+            return res.status(400).json({
+                title: 'ultrenostimesheets | Update User',
+                status: 'fail',
+                message: `Admin password does not match our records.`
+            });
+        }
+    } else {
+        // create new updateUser object
+        updateUser = {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            // email: req.body.email,
+        }
     }
     // update the user
     try {
         const returnObj = await Users.findOneAndUpdate({email: req.body.email}, updateUser, {new: true});;
         const updatedUser = await Users({email: userInfo.email});
-        if (!updatedUser) throw new Error();
+        if (!updatedUser) throw new Error(`User ${req.body.email} not found.`);
         let userCopy = {...updatedUser._doc};
         delete userCopy.password;
         res.status(200).json({
@@ -265,11 +274,11 @@ exports.updateUser = async (req, res) => {
         });
     } catch (e) {
         console.log(e.message)
-        res.status(500).json({
+        res.status(400).json({
             title: 'UltRenos Timesheets | Update User',
             status: 'fail',
             data: {
-                message: `Something went wrong while updating user: ${e.message}`
+                message: e.message||`Something went wrong while updating user: ${e.message}`
             }
         });
     }
@@ -317,7 +326,7 @@ exports.resetPassword = async (req, res) => {
 //                 }
 //             });
 //         } catch (e) {
-//             res.status(500).json({
+//             res.).json({
 //                 title: 'FindAHarp.com | Update Password',
 //                 status: 'fail',
 //                 data: {
@@ -386,7 +395,7 @@ exports.deleteUser = async (req, res) => {
     const adminInfo = await Users.find({email: req.body.adminemail});
     // error if no user
     if (!userInfo) {
-        return res.status(500).json({
+        return res.status(400).json({
             title: 'UltRenos Timesheets | Delete User',
             status: 'fail',
             message: `User not found.`
@@ -394,7 +403,7 @@ exports.deleteUser = async (req, res) => {
     }
     // error if no admin
     if (!adminInfo) {
-        return res.status(500).json({
+        return res.status(400).json({
             title: 'UltRenos Timesheets | Delete User',
             status: 'fail',
             message: `Admin not found.`
