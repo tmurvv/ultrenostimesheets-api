@@ -3,6 +3,7 @@ const uuid = require('uuid');
 const atob = require('atob');
 const bcrypt = require('bcrypt');
 const {Users} = require('../schemas/UserSchema');
+const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {resetPasswordEmail} = require('../assets/emailTemplates/resetPasswordEmail');
 const { admin } = require('googleapis/build/src/apis/admin');
 // const {emailVerifySend, emailResetPassword} = require('../email');
@@ -213,11 +214,30 @@ exports.sendResetEmail = async (req, res) => {
 //     }
 // };
 exports.updateUser = async (req, res) => {
-    // get user  
-    const userInfo = await Users.find({email: req.body.email});
-    const adminInfo = await Users.find({email: req.body.adminemail});
-    console.log('userInfo:', userInfo)
-    console.log('adminInfo:', adminInfo)
+    async function updateTimesheetEmails() { 
+        console.log('oldemail', req.body.oldemail)
+        console.log(req.body)  
+        try {
+            await Timesheets.updateMany({"userid": req.body.oldemail}, {"$set":{"userid": req.body.email}}, {"multi": true});
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+    let userInfo;
+    let adminInfo;
+    // get user 
+    try {
+        userInfo = await Users.findById(req.body.id);
+        adminInfo = await Users.find({email: req.body.adminemail});
+    } catch (e) {
+        console.log(e.message);
+        return res.status(400).json({
+            title: 'UltRenos Timesheets | Update User',
+            status: 'fail',
+            message: `Something went wrong on update.`
+        });
+    }
+    
     // error if no user
     if (!userInfo||userInfo.length<1) {
         return res.status(400).json({
@@ -225,6 +245,18 @@ exports.updateUser = async (req, res) => {
             status: 'fail',
             message: `User not found.`
         });
+    }
+    if (req.body.emailChange) {
+        try {
+            const exists = await Users.find({email: req.body.email});
+            if (exists.length>0) throw new Error("Email exists.");
+        } catch {
+            return res.status(400).json({
+                title: 'ultrenostimesheets | Update User',
+                status: 'fail',
+                message: `Email exists.`
+            });
+        }
     }
     let updateUser;
     if (req.body.role) {
@@ -255,14 +287,15 @@ exports.updateUser = async (req, res) => {
         updateUser = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
-            // email: req.body.email,
+            email: req.body.email
         }
     }
     // update the user
     try {
-        const returnObj = await Users.findOneAndUpdate({email: req.body.email}, updateUser, {new: true});;
-        const updatedUser = await Users({email: userInfo.email});
+        const returnObj = await Users.findByIdAndUpdate(req.body.id, updateUser, {new: true});
+        const updatedUser = await Users.findById(req.body.id);
         if (!updatedUser) throw new Error(`User ${req.body.email} not found.`);
+        updateTimesheetEmails();
         let userCopy = {...updatedUser._doc};
         delete userCopy.password;
         res.status(200).json({
