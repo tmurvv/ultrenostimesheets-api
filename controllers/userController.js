@@ -214,9 +214,9 @@ exports.sendResetEmail = async (req, res) => {
 //     }
 // };
 exports.updateUser = async (req, res) => {
+    console.log('body:', req.body)
     async function updateTimesheetEmails() { 
         console.log('oldemail', req.body.oldemail)
-        console.log(req.body)  
         try {
             await Timesheets.updateMany({"userid": req.body.oldemail}, {"$set":{"userid": req.body.email}}, {"multi": true});
         } catch (e) {
@@ -229,6 +229,8 @@ exports.updateUser = async (req, res) => {
     try {
         userInfo = await Users.findById(req.body.id);
         adminInfo = await Users.find({email: req.body.adminemail});
+        console.log('userInfo-findBE:', userInfo)
+        console.log('adminInfo-findbe:', adminInfo)
     } catch (e) {
         console.log(e.message);
         return res.status(400).json({
