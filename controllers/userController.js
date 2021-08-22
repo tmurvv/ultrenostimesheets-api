@@ -214,9 +214,7 @@ exports.sendResetEmail = async (req, res) => {
 //     }
 // };
 exports.updateUser = async (req, res) => {
-    console.log('body:', req.body)
-    async function updateTimesheetEmails() { 
-        console.log('oldemail', req.body.oldemail)
+    async function updateTimesheetEmails() {
         try {
             await Timesheets.updateMany({"userid": req.body.oldemail}, {"$set":{"userid": req.body.email}}, {"multi": true});
         } catch (e) {
@@ -229,8 +227,6 @@ exports.updateUser = async (req, res) => {
     try {
         userInfo = await Users.findById(req.body.id);
         adminInfo = await Users.find({email: req.body.adminemail});
-        console.log('userInfo-findBE:', userInfo)
-        console.log('adminInfo-findbe:', adminInfo)
     } catch (e) {
         console.log(e.message);
         return res.status(400).json({
@@ -248,15 +244,16 @@ exports.updateUser = async (req, res) => {
             message: `User not found.`
         });
     }
+    // if email change check that email not already in use.
     if (req.body.emailChange) {
         try {
             const exists = await Users.find({email: req.body.email});
-            if (exists.length>0) throw new Error("Email exists.");
+            if (exists.length>0) throw new Error("Email already in use.");
         } catch {
             return res.status(400).json({
                 title: 'ultrenostimesheets | Update User',
                 status: 'fail',
-                message: `Email exists.`
+                message: `Email already in use.`
             });
         }
     }
