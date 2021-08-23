@@ -1,14 +1,27 @@
-This app is run on Digital Ocean Server
+This app is run on Digital Ocean Server account tmurv@shaw.ca 143.198.188.28
 See One Note/clients for passwords
-ssh 143.198.188.28
+ssh root@143.198.188.28
+FE = /var/www/timesheets.ultrenos.ca/html
+FE URL = timesheets.ultrenos.ca
+BE = /app/ultrenos/ultrenostimesheets-api
+BE URL = timesheets-api.ultrenos.ca (as of 2021, running on port 7050)
 
 ## logs
 ssh 143.198.188.28 (on client)
 pm2 logs
 
+## to deploy
+git push all changes
+ssh root@143.198.188.28
+cd apps/ultrenos/utlrenostimesheets-api
+git pull
+check that config.env port is 7050
+
 ## Production
 - production version at ultrenostimesheets-api.ca
-- port: 3000
+- port: 7050 (as of 2021)
+
+
 
 ## Staging
 STAGING VERSION SHOULD BE STARTED AND STOPPED ON BACKEND

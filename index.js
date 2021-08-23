@@ -64,7 +64,7 @@ const upload = multer({
     onError : function(err, next) {
         console.log('error', err);
         // res.redirect('http://localhost:3006/?success=false');
-        res.redirect('https://ultrenostimesheets.take2tech.ca/?success=false');
+        res.redirect('https://timesheets.ultrenos.ca/?success=false');
     }
 }); 
 // app.get('/api/v1/admin/uploadjoblist', (req, res) => {
@@ -108,7 +108,7 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
     // fs.readFile('')
     //remove id 
     // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+    res.redirect('https://timesheets.ultrenos.ca/?success=true');
 });
 // Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-to-upload'), async (req, res) => {
@@ -140,7 +140,7 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-
     // fs.readFile('')
     //remove id 
     // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://ultrenostimesheets.take2tech.ca/?success=true');
+    res.redirect('https://timesheets.ultrenos.ca/?success=true');
 });
 
 //Router 
@@ -188,7 +188,7 @@ app.use('/api/v1/ultrenostimesheets/admin', adminRouter);
 
 // Catch invalid routes
 app.all('*', (req,res,next) => {
-    next(console.log(`Web address not found. Please see take2tech-api docs for valid addresses.`, 404));
+    next(console.log(`Web address not found.`, 404));
 });
 
 // app.use(globalErrorHandler);

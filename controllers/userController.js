@@ -133,7 +133,7 @@ exports.login = async (req, res) => {
     } catch (e) {
         console.log('error', e.message)
         if (!req.body.cookieId) res.status(400).json({
-            title: 'ultrenostimesheets.take2tech.ca | Login User',
+            title: 'timesheets.ultrenos.ca | Login User',
             status: 'fail',
             message: e.message,
             useremail: req.body.email
