@@ -257,5 +257,5 @@ mongoose
     .then(() => console.log('DB connection successful'))
     .catch(() => console.log('DB NOT CONNECTING. PLEASE CHECK NETWORK.'));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 7050;
 app.listen(port, (req, res) => console.log("server running"));
