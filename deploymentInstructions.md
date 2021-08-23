@@ -10,7 +10,7 @@ BE URL = timesheets-api.ultrenos.ca (as of 2021, running on port 7050)
 ssh 143.198.188.28 (on client)
 pm2 logs
 
-## to deploy
+## to deploy production
 check that config.env port is 7050
 git push all changes
 ssh root@143.198.188.28
@@ -18,19 +18,20 @@ cd apps/ultrenos/utlrenostimesheets-api
 git pull
 check that config.env port is 7050
 
-## Production
-- production version at ultrenostimesheets-api.ca
-- port: 7050 (as of 2021)
-
-
-
-## Staging
-STAGING VERSION SHOULD BE STARTED AND STOPPED ON BACKEND
-- staging version at subdomain: staging.ultrenostimesheets-api.ca
-- port: 6050
-- ssh over there: ssh 143.198.188.28 (on client)
-- navigate to apps/testing/ultrenostimesheets-api.ca
-- command is: pm2 start index.js
+## to deploy Staging
+- staging version at subdomain: timesheets-staging-api.ultrenos.ca
+- port: 7051
+- staging version uses ultrenos-portfolio db
+- git push all changes
+- ssh root@143.198.188.28
+- cd apps/ultrenos/ultrenostimesheets-staging-api/ultrenostimesheets-api
+- git reset --hard
+- git pull
+- if new changes involve config or index, the staging version of these files should be updated in parent directory
+- copy config.env and index-stg.js from parent directory
+### STAGING VERSION SHOULD BE STARTED AND STOPPED ON BACKEND
+- from dir apps/ultrenos/ultrenostimesheets-staging-api/ultrenostimesheets-api
+- command is: pm2 start index-stg.js
 - to check: pm2 status
 - to stop, use index in status list: pm2 stop 2 // for example
 

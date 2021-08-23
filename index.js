@@ -1,11 +1,10 @@
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';  // to allow scraping of webstores with invalid ssl
-// require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const mongoose = require('mongoose');
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
+const btoa = require('btoa');
 
 // security
 // const EventEmitter = require('events');
@@ -24,7 +23,7 @@ const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const {Joblist} = require('./schemas/JoblistSchema');
 const {Tasklist} = require('./schemas/TasklistSchema');
-// const {reminders} = require('./utils/reminders');
+const { json } = require('body-parser');
 
 // program setup
 const app = express();
@@ -57,20 +56,16 @@ app.use(express.static('img'));
 app.use(express.json({limit: '10kb'}))
 app.use(express.urlencoded({extended: true}));
 
-const writefile = util.promisify(fs.writeFile);
-
 const upload = multer({
     dest: './tmp', // this saves your file into a directory called "uploads"
     onError : function(err, next) {
         console.log('error', err);
-        // res.redirect('http://localhost:3006/?success=false');
-        res.redirect('https://timesheets.ultrenos.ca/?success=false');
+        if (process.env.NODE_ENV==='local') res.redirect(`${process.env.FE_LOCAL}/?success=false`);
+        if (process.env.NODE_ENV==='staging') res.redirect(`${process.env.FE_STAGING}/?success=false`);
+        if (process.env.NODE_ENV==='production') res.redirect(`${process.env.FE}/?success=false`);
     }
-}); 
-// app.get('/api/v1/admin/uploadjoblist', (req, res) => {
-//     res.sendFile(__dirname + '/index.html');
-// });
-// Be sure the file name matches the name attribute in your html
+});
+// JOB LIST Uploads not working in controller files Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-to-upload'), async (req, res) => {
     upload.single('file-to-upload')
     
@@ -98,22 +93,22 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
                     }
                 } catch(e) {
                     console.log('error on create', e.message)
-                }
-                  
+                }                 
             }
         });
     }
      
     readTextFile(`download/${filename}`);
-    // fs.readFile('')
     //remove id 
-    // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://timesheets.ultrenos.ca/?success=true');
+    if (process.env.NODE_ENV==='local') res.redirect(`${process.env.FE_LOCAL}/?success=true&user=${btoa(req.body.user)}`);
+    if (process.env.NODE_ENV==='staging') res.redirect(`${process.env.FE_STAGING}/?success=true&user=${btoa(req.body.user)}`);
+    if (process.env.NODE_ENV==='production') res.redirect(`${process.env.FE}/?success=true&user=${btoa(req.body.user)}`);
 });
-// Be sure the file name matches the name attribute in your html
+// TASK LIST - Uploads not working in controller files. Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-to-upload'), async (req, res) => {
     upload.single('file-to-upload')
-    
+    const user = await JSON.parse(req.body.user);
+    console.log('user:', user)
     const filename=req.file.filename;
     function readTextFile(file) {
         var content;
@@ -137,10 +132,10 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-
     }
      
     readTextFile(`download/${filename}`);
-    // fs.readFile('')
-    //remove id 
-    // res.redirect('http://localhost:3006/?success=true');
-    res.redirect('https://timesheets.ultrenos.ca/?success=true');
+    
+    if (process.env.NODE_ENV==='local') res.redirect(`${process.env.FE_LOCAL}/?success=true&user=${btoa(req.body.user)}`);
+    if (process.env.NODE_ENV==='staging') res.redirect(`${process.env.FE_STAGING}/?success=true&user=${btoa(req.body.user)}`);
+    if (process.env.NODE_ENV==='production') res.redirect(`${process.env.FE}/?success=true&user=${btoa(req.body.user)}`);
 });
 
 //Router 
@@ -148,92 +143,27 @@ app.use('/api/v1/ultrenostimesheets', timesheetRouter);
 app.use('/api/v1/ultrenostimesheets/supportlists', supportListRouter);
 app.use('/api/v1/ultrenostimesheets/users', userRouter);
 app.use('/api/v1/ultrenostimesheets/admin', adminRouter);
-// app.post('/api/v1/ultrenostimesheets/users/signup', async (req, res) => {
-//     console.log('insignup', req.body)
-//     // // const saltRounds=10;
-//     // // const hashPassword = await bcrypt.hash(req.body.password, saltRounds);
-//     // const user = Object.assign({ 
-//     //     contactId: uuid(), 
-//     //     firstname: req.body.firstname, 
-//     //     lastname: req.body.lastname, 
-//     //     emailphone: req.body.emailphone,
-//     //     password: req.body.password,
-//     //     _date_created: Date.now(),
-//     //     passwordChangedAt: req.body.passwordChangedAt
-//     // });
-//     // try {
-//     //     const addeduser = await Users.create(user);
-
-//     //     // createSendToken(addeduser, 201, res);
-        
-//     // } catch (e) {
-//     //     res.status(500).json({
-//     //         title: 'Ultimate Renovations | Signup',
-//     //         status: 'fail',
-//     //         data: {
-//     //             message: e.message
-//     //         }
-//     //     });
-//     // }
-//     res.status(200).json({
-//         title: 'signup',
-//         status: 'success'
-//     });
-// });
-
-// //parser for pug
-// const bodyParser = require('body-parser');
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
 
 // Catch invalid routes
 app.all('*', (req,res,next) => {
     next(console.log(`Web address not found.`, 404));
 });
 
-// app.use(globalErrorHandler);
-
-
-// const express = require("express");
-// const cors = require('cors');
-
-
-
-// // create application/x-www-form-urlencoded parser
-// const timesheetRouter = require('./routes/timesheetRoutes');
-// const supportListRouter = require('./routes/supportListRoutes');
-
-// const app = express();
-
-// //CORS
-// app.use(cors());
-// app.all('/', function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//     next()
-// });
-
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
-  
-// //   app.get('/', function(req, res, next) {
-// //     // Handle the get for this route
-// //   });
-  
-// //   app.post('/', function(req, res, next) {
-// //    // Handle the post for this route
-// //   });
-
-
-// // console.log(req.body)
-
 /************ 
 *Connect DB
 *************/
-const DB = process.env.DATABASE.replace(
+let DB;
+if (process.env.NODE_ENV==='production') DB = process.env.DATABASE.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+// staging uses portfolio db
+if (process.env.NODE_ENV==='staging') DB = process.env.DATABASE_STAGING.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+// local uses portfolio db
+if (process.env.NODE_ENV==='local') DB = process.env.DATABASE_STAGING.replace(
     '<PASSWORD>',
     process.env.DATABASE_PASSWORD
 );
@@ -254,8 +184,8 @@ mongoose
         useFindAndModify: false,
         useUnifiedTopology: true
     })
-    .then(() => console.log('DB connection successful'))
-    .catch(() => console.log('DB NOT CONNECTING. PLEASE CHECK NETWORK.'));
+    .then(() => console.log(`DB connection successful. Mode: ${process.env.NODE_ENV}. DB: ${DB}`))
+    .catch(() => console.log(`DB NOT CONNECTING. PLEASE CHECK NETWORK. Mode: ${process.env.NODE_ENV}. DB: ${DB} `));
 
 const port = process.env.PORT || 7050;
-app.listen(port, (req, res) => console.log("server running"));
+app.listen(port, (req, res) => console.log(`server running on port ${port}`));
