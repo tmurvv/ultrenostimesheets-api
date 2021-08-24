@@ -103,15 +103,15 @@ exports.login = async (req, res) => {
         if (req.body.email) {
             let valid = false;
             userInfo = await Users.findOne({email: req.body.email});
-            const adminInfo = await Users.findOne({email: 'admin@admin.com'});
+            const adminInfo = await Users.findOne({email: req.body.adminemail});
             if (!userInfo) throw new Error('User not found.');
             // // check if email is verified:
             // if (!userInfo.emailverified) throw new Error(`The email ${userInfo.email} is not yet verified. Please check your inbox for a verification email from Findaharp.com.`);
             // check password
             if(userInfo&&userInfo.password) {
                 if(await bcrypt.compare(req.body.password, userInfo.password)) valid=true;
-            }
-            if(adminInfo&&adminInfo.password) {
+            } 
+            if (adminInfo&&adminInfo.password) {
                 if(await bcrypt.compare(req.body.password, adminInfo.password)) valid=true;
             }
             if(!valid) throw new Error('Password does not match our records.');

@@ -1,7 +1,24 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
-const DB = "mongodb+srv://tmurvv:caEhq0cvjVtSjatA@cluster0-uf5qd.mongodb.net/ultrenos?retryWrites=true&w=majority";
+
+// choose DB based on NODE_ENV
+let DB;
+if (process.env.NODE_ENV==='production') DB = process.env.DATABASE.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+// staging uses portfolio db
+if (process.env.NODE_ENV==='staging') DB = process.env.DATABASE_STAGING.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+// local uses portfolio db
+if (process.env.NODE_ENV==='local') DB = process.env.DATABASE_STAGING.replace(
+    '<PASSWORD>',
+    process.env.DATABASE_PASSWORD
+);
+
 const {timesheetReminder} = require('../assets/emailTemplates/timesheetReminder');
 const {Timesheets} = require('../schemas/TimesheetsSchema');
 const {Users} = require('../schemas/UserSchema');

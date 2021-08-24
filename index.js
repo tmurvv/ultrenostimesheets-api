@@ -187,5 +187,11 @@ mongoose
     .then(() => console.log(`DB connection successful. Mode: ${process.env.NODE_ENV}. DB: ${DB}`))
     .catch(() => console.log(`DB NOT CONNECTING. PLEASE CHECK NETWORK. Mode: ${process.env.NODE_ENV}. DB: ${DB} `));
 
-const port = process.env.PORT || 7050;
+let port;
+if (process.env.NODE_ENV==='staging') {
+    port = 7051
+} else {
+    port = process.env.PORT || 7050;
+}
+    
 app.listen(port, (req, res) => console.log(`server running on port ${port}`));
