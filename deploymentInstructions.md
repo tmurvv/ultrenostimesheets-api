@@ -15,6 +15,7 @@ check that config.env port is 7050
 git push all changes
 ssh root@143.198.188.28
 cd apps/ultrenos/utlrenostimesheets-api
+git reset --hard
 git pull
 check that config.env port is 7050
 

@@ -73,10 +73,10 @@ const {Users} = require('../schemas/UserSchema');
         if (user.role!=='admin') {
             // check for recent timesheet
             recentSheets.map(sheet=>{
-                if (sheet.userid === user.email) found=true; updated.push(user._id);
+                if (sheet.userid === user.email) found=true;
             });
             // if not found, send timesheet reminder email
-            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {console.log('sending', user); timesheetReminder(user)};
+            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {console.log('sending', user); timesheetReminder(user); updated.push(user._id);};
         }
     });
     // if user sent reminder email, update user.reminderLastSent to today's date
