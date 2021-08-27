@@ -24,7 +24,7 @@ const usersSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    reminderLastSent: {type:Date, default: new Date()}
+    reminderLastSent: {type:Date}
 },{ versionKey: false });
 usersSchema.pre('save', async function(next) {
     if(!this.isModified('password')) return next;
