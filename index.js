@@ -68,7 +68,6 @@ const upload = multer({
 // JOB LIST Uploads not working in controller files Be sure the file name matches the name attribute in your html
 app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-to-upload'), async (req, res) => {
     upload.single('file-to-upload')
-    
     const filename=req.file.filename;
     function readTextFile(file) {
         var content;
