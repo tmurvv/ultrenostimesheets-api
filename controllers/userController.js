@@ -225,7 +225,7 @@ exports.updateUser = async (req, res) => {
     let adminInfo;
     // get user 
     try {
-        userInfo = await Users.findById(req.body.id);
+        userInfo = await Users.find({email: req.body.oldemail});
         adminInfo = await Users.find({email: req.body.adminemail});
     } catch (e) {
         console.log(e.message);
@@ -291,8 +291,8 @@ exports.updateUser = async (req, res) => {
     }
     // update the user
     try {
-        const returnObj = await Users.findByIdAndUpdate(req.body.id, updateUser, {new: true});
-        const updatedUser = await Users.findById(req.body.id);
+        const returnObj = await Users.findOneAndUpdate({email: req.body.oldemail}, updateUser, {new: true});
+        const updatedUser = await Users.find({email: req.body.oldemail});
         if (!updatedUser) throw new Error(`User ${req.body.email} not found.`);
         updateTimesheetEmails();
         let userCopy = {...updatedUser._doc};
