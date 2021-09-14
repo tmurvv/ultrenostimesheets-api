@@ -81,6 +81,13 @@ exports.viewTimesheetsByUser = async (req, res) => {
 }
 exports.appendTimesheets = async (req, res) => {
     try {
+        // check for overlapping
+        const timesheets = await Timesheets.find({userid: req.body.userid});
+        if (timesheets.length>0) {
+            timesheets.map(sheet => {
+                if ((new Date(req.body.starttime).getTime()<sheet.endtime.getTime()&&new Date(req.body.starttime).getTime()>sheet.starttime.getTime())||(new Date(req.body.endtime).getTime()<sheet.endtime.getTime()&&new Date(req.body.endtime).getTime()>sheet.starttime.getTime())) throw Error('Time overlaps with another timesheet.');
+            });
+        }
         const addedtimesheet = await Timesheets.create(req.body);
         if (!addedtimesheet) throw new Error('Something went wrong on signup.');
         res.status(200).json({
@@ -99,8 +106,14 @@ exports.appendTimesheets = async (req, res) => {
 }
 exports.updateTimesheets = async (req, res) => {
     //remove id
-    
     try {
+        // check for overlapping
+        const timesheets = await Timesheets.find({userid: req.body.userid});
+        if (timesheets.length>0) {
+            timesheets.map(sheet => {
+                if ((new Date(req.body.starttime).getTime()<sheet.endtime.getTime()&&new Date(req.body.starttime).getTime()>sheet.starttime.getTime())||(new Date(req.body.endtime).getTime()<sheet.endtime.getTime()&&new Date(req.body.endtime).getTime()>sheet.starttime.getTime())) throw Error('Time overlaps with another timesheet.');
+            });
+        }
         const updatedtimesheet = await Timesheets.findByIdAndUpdate(req.body.id, req.body);
         res.status(200).json({
             title: 'ultrenostimesheets | Update Timesheet',
@@ -109,7 +122,7 @@ exports.updateTimesheets = async (req, res) => {
         });
     } catch(e) {
         console.log(e.message);
-        return res.status(500).json({
+        return res.status(400).json({
             title: 'ultrenostimesheets | Timesheet Update',
             status: 'fail',
             error: e.message

@@ -43,14 +43,12 @@ const {Users} = require('../schemas/UserSchema');
     // get users
     try {
         userList = await Users.find();
-        console.log('userList:', userList.length)
     } catch (e) {
         console.log('error fetching users', e.message);
     }
     // get timesheets
     try {
         timesheetList = await Timesheets.find();
-        console.log('timesheetList:', timesheetList.length)
     } catch (e) {
         console.log('error fetching users', e.message);
     }
@@ -76,7 +74,7 @@ const {Users} = require('../schemas/UserSchema');
                 if (sheet.userid === user.email) found=true;
             });
             // if not found, send timesheet reminder email
-            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {console.log('sending', user); timesheetReminder(user); updated.push(user._id);};
+            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {timesheetReminder(user); updated.push(user._id);};
         }
     });
     // if user sent reminder email, update user.reminderLastSent to today's date

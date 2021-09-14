@@ -107,7 +107,6 @@ app.post('/api/v1/ultrenostimesheets/admin/uploadjoblist', upload.single('file-t
 app.post('/api/v1/ultrenostimesheets/admin/uploadtasklist', upload.single('file-to-upload'), async (req, res) => {
     upload.single('file-to-upload')
     const user = await JSON.parse(req.body.user);
-    console.log('user:', user)
     const filename=req.file.filename;
     function readTextFile(file) {
         var content;

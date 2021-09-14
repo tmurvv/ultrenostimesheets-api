@@ -65,11 +65,11 @@ exports.downloadNewTimesheets = async (req, res) => {
     try {
         const timesheets = await Timesheets.find({downloaded: false});
         if (!timesheets) throw new Error('No new timesheets to download.')        
-        let timesheetcsv = 'First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
+        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
 
         timesheets.map(sheet=> {
             cleanCommas(sheet);
-            timesheetcsv=`${timesheetcsv}${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
+            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
         })
         // Query and stream
         const date=new Date();
@@ -122,23 +122,23 @@ exports.downloadAllTimesheets = async (req, res) => {
         return `${entryDate.getFullYear()}-${month}-${date}`
     }
     function cleanCommas(sheet) {
-        sheet.firstname=sheet.firstname.replace(/,/g, '/');
-        sheet.lastname=sheet.lastname.replace(/,/g, '/');
-        sheet.jobid=sheet.jobid.replace(/,/g, '/');
-        sheet.jobname=sheet.jobname.replace(/,/g, '/');
-        sheet.task=sheet.task.replace(/,/g, '/');
-        sheet.notes=sheet.notes.replace(/,/g, '/');
+        sheet.firstname=sheet.firstname.replace(/[\n\r]/g,' ').replace(/,/g, '/');
+        sheet.lastname=sheet.lastname.replace(/[\n\r]/g,' ').replace(/,/g, '/');
+        sheet.jobid=sheet.jobid.replace(/[\n\r]/g,' ').replace(/,/g, '/');
+        sheet.jobname=sheet.jobname.replace(/[\n\r]/g,' ').replace(/,/g, '/');
+        sheet.task=sheet.task.replace(/[\n\r]/g,' ').replace(/,/g, '/');
+        sheet.notes=sheet.notes.replace(/[\n\r]/g,' ').replace(/,/g, '/');
         return sheet;
     }
     try {
         const timesheets = await Timesheets.find();
         if (!timesheets) throw new Error('No timesheets to download.')        
-        let timesheetcsv = 'First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
+        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
 
         timesheets.forEach(sheet=> {
             // clean commas
             cleanCommas(sheet);
-            timesheetcsv=`${timesheetcsv}${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
+            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
         })
         // Query and stream
         const date=new Date();

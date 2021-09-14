@@ -11,7 +11,6 @@ exports.getCurrentJobs = async (req, res) => {
             data: currentJobs
         });
     } catch(e) {
-        console.log('from getCurrentJobs', e.message) 
         res.status(500).json({
             title: 'ultrenostimesheets | Get Current Jobs',
             status: 'fail',
