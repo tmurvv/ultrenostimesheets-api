@@ -11,10 +11,11 @@ ssh 143.198.188.28 (on client)
 pm2 logs
 
 ## to deploy production
+check that config.env NODE_ENV is production
 check that config.env port is 7050
 git push all changes
 ssh root@143.198.188.28
-cd apps/ultrenos/utlrenostimesheets-api
+cd apps/ultrenos/ultrenostimesheets-api
 git reset --hard
 git pull
 check that config.env port is 7050

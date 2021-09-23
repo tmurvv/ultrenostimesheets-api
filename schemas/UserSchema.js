@@ -22,9 +22,12 @@ const usersSchema = new mongoose.Schema({
     },
     passwordChangedAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
-    reminderLastSent: {type:Date}
+    reminderLastSent: {
+        type:Date, 
+        default: Date.now
+    }
 },{ versionKey: false });
 usersSchema.pre('save', async function(next) {
     if(!this.isModified('password')) return next;

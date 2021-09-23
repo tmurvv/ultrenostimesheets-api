@@ -61,7 +61,9 @@ const {Users} = require('../schemas/UserSchema');
     if (new Date().getDay()===2) {threeWorkdayMillies=4*60*60*24*1000;oneWorkdayMillies=2*60*60*24*1000}
     // filter for timesheets entered within the last 3 business days
     timesheetList.map(sheet=>{
-        if (new Date().getTime() - new Date(sheet.timesubmitted).getTime() < threeWorkdayMillies) recentSheets.push(sheet);
+        if (new Date().getTime() - new Date(sheet.starttime).getTime() < threeWorkdayMillies) {
+            recentSheets.push(sheet);
+        }
     });
     // check if active users have a timesheet in the last 3 business days
     let found; 
@@ -73,16 +75,21 @@ const {Users} = require('../schemas/UserSchema');
             recentSheets.map(sheet=>{
                 if (sheet.userid === user.email) found=true;
             });
+            // check that reminderLastSent has default value
+            if ((!user.reminderLastSent)||user.reminderLastSent===undefined) user.reminderLastSent='1900-01-01T09:00:03.341+00:00';
             // if not found, send timesheet reminder email
-            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {timesheetReminder(user); updated.push(user._id);};
+            if (!found&&(user.reminderLastSent&&user.reminderLastSent!==undefined&&((new Date().getTime())-(new Date(user.reminderLastSent).getTime())>=oneWorkdayMillies))) {
+                timesheetReminder(user);
+                updated.push(user._id);
+            }
         }
     });
     // if user sent reminder email, update user.reminderLastSent to today's date
     try {
         await Users.updateMany(
             { _id: { $in: updated } }, 
-            { $set: { reminderLastSent: new Date() } }, 
-            console.log(`Success sending reminder email and updating reminderLastSent.`)
+            { $set: { reminderLastSent: new Date() } },
+            console.log(`Success sending reminder email and updating reminderLastSent.`,updated.length)
         );
     } catch (e) {
         console.log(`Error updating reminderLastSent. ${e.message}`);
