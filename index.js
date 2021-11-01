@@ -186,10 +186,11 @@ mongoose
     .catch(() => console.log(`DB NOT CONNECTING. PLEASE CHECK NETWORK. Mode: ${process.env.NODE_ENV}. DB: ${DB} `));
 
 let port;
-if (process.env.NODE_ENV==='staging') {
-    port = 7051
-} else {
-    port = process.env.PORT || 7050;
-}
-    
+// BREAKING using to work on tranferring back to Heroku
+// if (process.env.NODE_ENV==='staging') {
+//     port = 7051
+// } else {
+//     port = process.env.PORT || 7050;
+// }
+port = process.env.PORT || 3000 ;
 app.listen(port, (req, res) => console.log(`server running on port ${port}`));
