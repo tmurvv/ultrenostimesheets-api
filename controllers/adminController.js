@@ -55,6 +55,16 @@ exports.downloadNewTimesheets = async (req, res) => {
         const date=(entryDate.getDate())<10?`0${entryDate.getDate()}`:entryDate.getDate();
         return `${entryDate.getFullYear()}-${month}-${date}`
     }
+    function cleanHiddenCharacters(sheet) {
+        if (!sheet) return; // Report error
+        if (sheet.firstname) sheet.firstname=sheet.firstname.replace(/\r?\n|\r/g, '/');
+        if (sheet.lastname) sheet.lastname=sheet.lastname.replace(/\r?\n|\r/g, '/');
+        if (sheet.jobid) sheet.jobid=sheet.jobid.replace(/\r?\n|\r/g, '/');
+        if (sheet.jobname) sheet.jobname=sheet.jobname.replace(/\r?\n|\r/g, '/');
+        if (sheet.task) sheet.task=sheet.task.replace(/\r?\n|\r/g, '/');
+        if (sheet.notes) sheet.notes=sheet.notes.replace(/\r?\n|\r/g, '/');
+        return sheet;
+    }
     function cleanCommas(sheet) {
         sheet.firstname=sheet.firstname.replace(/,/g, '/');
         sheet.lastname=sheet.lastname.replace(/,/g, '/');
@@ -62,6 +72,7 @@ exports.downloadNewTimesheets = async (req, res) => {
         sheet.jobname=sheet.jobname.replace(/,/g, '/');
         sheet.task=sheet.task.replace(/,/g, '/');
         sheet.notes=sheet.notes.replace(/,/g, '/');
+        return sheet;
     } 
     try {
         const timesheets = await Timesheets.find({downloaded: false});
@@ -69,7 +80,7 @@ exports.downloadNewTimesheets = async (req, res) => {
         let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
 
         timesheets.map(sheet=>{
-            cleanHiddenCharacters(cleanCommas(sheet));
+            sheet=cleanHiddenCharacters(cleanCommas(sheet));
             timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
         })
         // Query and stream
@@ -123,12 +134,14 @@ exports.downloadAllTimesheets = async (req, res) => {
         return `${entryDate.getFullYear()}-${month}-${date}`
     }
     function cleanHiddenCharacters(sheet) {
-        sheet.notes=sheet.firstname.replace(/\r?\n|\r/g, '/');
-        sheet.notes=sheet.lastname.replace(/\r?\n|\r/g, '/');
-        sheet.notes=sheet.jobid.replace(/\r?\n|\r/g, '/');
-        sheet.notes=sheet.jobname.replace(/\r?\n|\r/g, '/');
-        sheet.notes=sheet.task.replace(/\r?\n|\r/g, '/');
-        sheet.notes=sheet.notes.replace(/\r?\n|\r/g, '/');
+        if (!sheet) return; // Report error
+        if (sheet.firstname) sheet.firstname=sheet.firstname.replace(/\r?\n|\r/g, '/');
+        if (sheet.lastname) sheet.lastname=sheet.lastname.replace(/\r?\n|\r/g, '/');
+        if (sheet.jobid) sheet.jobid=sheet.jobid.replace(/\r?\n|\r/g, '/');
+        if (sheet.jobname) sheet.jobname=sheet.jobname.replace(/\r?\n|\r/g, '/');
+        if (sheet.task) sheet.task=sheet.task.replace(/\r?\n|\r/g, '/');
+        if (sheet.notes) sheet.notes=sheet.notes.replace(/\r?\n|\r/g, '/');
+        return sheet;
     }
     function cleanCommas(sheet) {
         sheet.firstname=sheet.firstname.replace(/,/g, '/');
