@@ -60,5 +60,36 @@ exports.timesheetReminder = async (user) => {
             console.error(error.response.body)
         }
         return false;
-    }  
+    }
+
+    // send email to employer
+    try {
+        // send mail with defined transport object -- for multiple recipient use an outer foreach and send one at a time
+        const info = await transporter.sendMail({
+            from: '<tech@take2tech.ca>', // sender address
+            to: `brad@ultimaterenovations.com`, // list of receivers
+            subject: `Timesheet Reminder Copy | Ultimate Renovations`,
+            text: `Hello ${user.firstname} ${user.lastname}, it has been more than three days since your last timesheet entry.`,
+            html: `<html>
+                        <body style="color:#083a08; font-family: Lato, Arial, Helvetica, sans-serif;
+                                                    line-height:1.8em;">
+                            <h2>Copy of email sent to ${user.firstname} ${user.lastname}</h2>                       
+                            <p>--------------------------</p>                       
+                            <h2>Message from Ultimate Renovations Timesheets</h2>
+                            <p>Hello ${user.firstname} ${user.lastname},<br><br>It has been more than three business days since your last timesheet entry.</p>
+                            <p><a style="color:#4054b2;font-weight: 600;font-size: 24px;" href="https://timesheets.ultrenos.ca"> Click here </a> to enter your timesheet(s) and get paid!</p>
+                            <p>Please contact the office if you have any questions.</p>
+                            <p>Thank you,<br/>Ultimate Renovations</p>
+                        </body>
+                    </html>`
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.response) {
+            console.error(error.response.body)
+        }
+        return false;
+    }
 };
