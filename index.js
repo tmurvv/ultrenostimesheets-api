@@ -165,15 +165,15 @@ if (process.env.NODE_ENV==='local') DB = process.env.DATABASE_STAGING.replace(
     '<PASSWORD>',
     process.env.DATABASE_PASSWORD
 );
-// const DEVDB = process.env.DEV_DATABASE.replace(
-//     '<PASSWORD>',
-//     process.env.DEV_DATABASE_PASSWORD
-// );
+const DEVDB = process.env.DEV_DATABASE.replace(
+    '<PASSWORD>',
+    process.env.DEV_DATABASE_PASSWORD
+);
 
-// const PORTDB = process.env.PORTFOLIO_DATABASE.replace(
-//     '<PASSWORD>',
-//     process.env.PORTFOLIO_DATABASE_PASSWORD
-// );
+const PORTDB = process.env.PORTFOLIO_DATABASE.replace(
+    '<PASSWORD>',
+    process.env.PORTFOLIO_DATABASE_PASSWORD
+);
 
 mongoose
     .connect(DB, {

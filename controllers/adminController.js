@@ -77,11 +77,11 @@ exports.downloadNewTimesheets = async (req, res) => {
     try {
         const timesheets = await Timesheets.find({downloaded: false});
         if (!timesheets) throw new Error('No new timesheets to download.')        
-        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
+        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, Task, Notes, Submitted On\n';
 
         timesheets.map(sheet=>{
             sheet=cleanHiddenCharacters(cleanCommas(sheet));
-            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
+            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes},${sheet.timesubmitted.toString().split(" GMT")[0]}\n`
         })
         // Query and stream
         const date=new Date();
@@ -155,12 +155,12 @@ exports.downloadAllTimesheets = async (req, res) => {
     try {
         const timesheets = await Timesheets.find();
         if (!timesheets) throw new Error('No timesheets to download.')        
-        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes\n';
+        let timesheetcsv = 'Email, First Name, Last Name, Date of Work, Start, Finish, Lunch, Hours Worked, Job Id, Job Name, task, notes, Submitted On\n';
 
         timesheets.forEach(sheet=> {
             // clean commas and line breaks
             cleanHiddenCharacters(cleanCommas(sheet));
-            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes}\n`
+            timesheetcsv=`${timesheetcsv}${sheet.userid},${sheet.firstname},${sheet.lastname},${getDateWorked(sheet.starttime)},${(new Date(sheet.starttime).getHours())}:${(new Date(sheet.starttime).getMinutes())},${(new Date(sheet.endtime).getHours())}:${(new Date(sheet.endtime).getMinutes())},${sheet.lunchtime},${minutesToDigital(getMinutesWorked(sheet.starttime, sheet.endtime, sheet.lunchtime))},${sheet.jobid},${sheet.jobname},${sheet.task},${sheet.notes},${sheet.timesubmitted.toString().split(" GMT")[0]}\n`
         })
         // Query and stream
         const date=new Date();
